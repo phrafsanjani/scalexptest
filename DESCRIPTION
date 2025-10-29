@@ -1,5 +1,5 @@
-Package: scalexp
-Title: What the Package Does (One Line, Title Case)
+Package: scalexptest
+Title: Test Hypotheses Regarding Scale-Exponential Family of Distributions
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))

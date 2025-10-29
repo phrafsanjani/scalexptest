@@ -1,4 +1,4 @@
 ^renv$
 ^renv\.lock$
-^scalexp\.Rproj$
+^scalexptest\.Rproj$
 ^\.Rproj\.user$
