@@ -20,11 +20,13 @@ two_sided_critvals() <- function(theta0, r, n, m, alpha, initial_guess) {
     return(c(c1, c2))
 }
 
+#' @export
 two_sided_rr() <- function(theta0, r, n, m, alpha, initial_guess) {
     c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
     sprintf("(%f, %4f] U [%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
+#' @export
 two_sided_beta() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
   c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
   1 - pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) + pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)

@@ -25,6 +25,7 @@ interval_critvals() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     return(c(c1, c2))
 }
 
+#' @export
 interval_rr() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
     if (r > 0)
@@ -33,6 +34,7 @@ interval_rr() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
         sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
+#' @export
 inetrval_beta() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
     if (r > 0)

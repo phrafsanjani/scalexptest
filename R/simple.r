@@ -6,6 +6,7 @@ simple_critval() <- function(theta0, theta1, r, n, m, alpha) {
     }
 }
 
+#' @export
 simple_rr() <- function(theta0, theta1, r, n, m, alpha) {
     c <- simple_critval(theta0, theta1, r, n, m, alpha)
     if (theta1 ^ r > theta0 ^ r)
@@ -14,6 +15,7 @@ simple_rr() <- function(theta0, theta1, r, n, m, alpha) {
         sprintf("(%4f, %f)", c, Inf)
 }
 
+#' @export
 simple_beta() <- function(theta0, theta1, r, n, m, alpha) {
     c <- simple_critval(theta0, theta1, r, n, m, alpha)
     if (theta1 ^ r > theta0 ^ r)
