@@ -1,11 +1,19 @@
 Package: scalexptest
-Title: Test Hypotheses Regarding Scale-Exponential Family of Distributions
+Title: Statistical Tests for the Scale-Exponential Family of Distributions
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Parsa", "Hosseinipour Rafsanjani", , "parsahosseini2001@gmail.com", role = c("aut", "cre"))
+Description: Performs hypothesis tests for the scale-exponential family of
+    distributions, which includes Exponential, Gamma and Weibull among
+    others. This package provides functions to calculate critical values,
+    determine rejection regions, and compute test power to support
+    statistical inference.
+License: use_gpl3_license()
+URL: https://github.com/phrafsanjani/scalexptest
+BugReports: https://github.com/phrafsanjani/scalexptest/issues
+Imports:
+    expint,
+    pracma
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
