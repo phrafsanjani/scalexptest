@@ -1,4 +1,4 @@
-interval_critvals() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
+interval_critvals <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     s <- n * m / r
     equations <- function(vars, s, theta0, theta1, r, alpha) {
       c1 <- vars[1]
@@ -22,8 +22,18 @@ interval_critvals() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     return(c(c1, c2))
 }
 
+#' Rejection Region for Interval Hypothesis Tests
+#' 
+#' `interval_rr()` computes the rejection region for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' 
+#' @param theta0 $\theta_0$
+#' @param r $r$
+#' @param n $n$
+#' @param m $m$
+#' @param alpha Significance level $\alpha$
+#' @returns A character vector
 #' @export
-interval_rr() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
+interval_rr <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
     if (r > 0)
         sprintf("(%4f, %4f)", c[1], c[2])
@@ -31,8 +41,19 @@ interval_rr() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
         sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
+#' Power for Interval Hypothesis Tests
+#' 
+#' `interval_beta()` computes statistical power at $\theta = \theta_1$ for interval hypothesis tests.
+#' 
+#' @param theta0 $\theta_0$
+#' @param theta1 $\theta_1$
+#' @param r $r$
+#' @param n $n$
+#' @param m $m$
+#' @param alpha Significance level $\alpha$
+#' @returns A probability value between 0 and 1
 #' @export
-inetrval_beta() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
+inetrval_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
     if (r > 0)
         pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) - pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)
