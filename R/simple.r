@@ -7,21 +7,17 @@ simple_critval() <- function(theta0, theta1, r, n, m, alpha) {
 }
 
 simple_rr() <- function(theta0, theta1, r, n, m, alpha) {
-    if (theta1 ^ r > theta0 ^ r) {
-        c <- qgamma(alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    c <- simple_critval(theta0, theta1, r, n, m, alpha)
+    if (theta1 ^ r > theta0 ^ r)
         sprintf("(%f, %4f)", -Inf, c)
-    } else {
-        c <- qgamma(1 - alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    else
         sprintf("(%4f, %f)", c, Inf)
-    }
 }
 
 simple_beta() <- function(theta0, theta1, r, n, m, alpha) {
-    if (theta1 ^ r > theta0 ^ r) {
-        c <- qgamma(alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    c <- simple_critval(theta0, theta1, r, n, m, alpha)
+    if (theta1 ^ r > theta0 ^ r)
         pgamma(c, shape = n * m / r, scale = 1 / theta1 ^ r)
-    } else {
-        c <- qgamma(1 - alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    else
         1 - pgamma(c, shape = n * m / r, scale = 1 / theta1 ^ r)
-    }
 }
