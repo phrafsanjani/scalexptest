@@ -1,0 +1,31 @@
+library(pracma)
+library(expint)
+
+two_sided_critvals() <- function(theta0, r, n, m, alpha, initial_guess) {
+    s <- n * m / r
+    equations <- function(vars, s, theta0, r, alpha) {
+      c1 <- vars[1]
+      c2 <- vars[2]
+      
+      eq1 <- gammainc(s, c1 * theta0 ^ r) - gammainc(s, c2 * theta0 ^ r) - (1 - alpha) * gamma(s)
+      eq2 <- gammainc(1 + s, c1 * theta0 ^ r) - gammainc(1 + s, c2 * theta0 ^ r) - (1 - alpha) * s * gamma(s)
+
+      return(c(eq1, eq2))
+    }
+    solution <- fsolve(equations, initial_guess, s = s, theta0 = theta0, r = r, alpha = alpha)
+
+    c1 <- solution$x[1]
+    c2 <- solution$x[2]
+
+    return(c(c1, c2))
+}
+
+two_sided_rr() <- function(theta0, r, n, m, alpha, initial_guess) {
+    c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
+    sprintf("(%f, %4f] U [%4f, %f)", -Inf, c[1], c[2], Inf)
+}
+
+two_sided_beta() <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
+  c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
+  1 - pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) + pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)
+}
