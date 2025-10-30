@@ -7,15 +7,19 @@
 interval_rr(theta0, theta1, r, n, m, alpha, initial_guess)
 }
 \arguments{
-\item{theta0}{$\theta_0$}
+\item{theta0}{A positive numeric value}
 
-\item{r}{$r$}
+\item{theta1}{A positive numeric value}
 
-\item{n}{$n$}
+\item{r}{A non-zero numeric value}
 
-\item{m}{$m$}
+\item{n}{An integer represeting the sample size}
 
-\item{alpha}{Significance level $\alpha$}
+\item{m}{A non-zero numeric value}
+
+\item{alpha}{Numeric value between 0 and 1 representing the significance level}
+
+\item{initial_guess}{Numeric vector of length 2}
 }
 \value{
 A character vector

@@ -7,20 +7,22 @@
 two_sided_beta(theta0, theta1, r, n, m, alpha, initial_guess)
 }
 \arguments{
-\item{theta0}{$\theta_0$}
+\item{theta0}{A positive numeric value}
 
-\item{theta1}{$\theta_1$}
+\item{theta1}{A positive numeric value}
 
-\item{r}{$r$}
+\item{r}{A non-zero numeric value}
 
-\item{n}{$n$}
+\item{n}{An integer represeting the sample size}
 
-\item{m}{$m$}
+\item{m}{A non-zero numeric value}
 
-\item{alpha}{Significance level $\alpha$}
+\item{alpha}{Numeric value between 0 and 1 representing the significance level}
+
+\item{initial_guess}{Numeric vector of length 2}
 }
 \value{
-A probability value between 0 and 1
+A numeric value between 0 and 1
 }
 \description{
 \code{two_sided_beta()} computes statistical power at $\theta = \theta_1$ for simple vs two-sided hypotheses.

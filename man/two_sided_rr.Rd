@@ -7,15 +7,17 @@
 two_sided_rr(theta0, r, n, m, alpha, initial_guess)
 }
 \arguments{
-\item{theta0}{$\theta_0$}
+\item{theta0}{A positive numeric value}
 
-\item{r}{$r$}
+\item{r}{A non-zero numeric value}
 
-\item{n}{$n$}
+\item{n}{An integer represeting the sample size}
 
-\item{m}{$m$}
+\item{m}{A non-zero numeric value}
 
-\item{alpha}{Significance level $\alpha$}
+\item{alpha}{Numeric value between 0 and 1 representing the significance level}
+
+\item{initial_guess}{Numeric vector of length 2}
 }
 \value{
 A character vector

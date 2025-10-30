@@ -7,17 +7,17 @@
 simple_rr(theta0, theta1, r, n, m, alpha)
 }
 \arguments{
-\item{theta0}{$\theta_0$}
+\item{theta0}{A positive numeric value}
 
-\item{theta1}{$\theta_1$}
+\item{theta1}{A positive numeric value}
 
-\item{r}{$r$}
+\item{r}{A non-zero numeric value}
 
-\item{n}{$n$}
+\item{n}{An integer represeting the sample size}
 
-\item{m}{$m$}
+\item{m}{A non-zero numeric value}
 
-\item{alpha}{Significance level $\alpha$}
+\item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
 A character vector
@@ -27,8 +27,13 @@ A character vector
 simple vs one-sided and one-sided vs one-sided hypotheses.
 }
 \examples{
-simple_rr(3, 5, -2, 25, -1, 0.05)
-simple_rr(3, 2, -2, 25, -1, 0.05)
+simple_rr(2, 4, -2, 20, -1, 0.01)
+simple_rr(1 / 8, 1 / 10, -1, 9, -1, 0.05)
+simple_rr(2, 1, 1, 1, 1, 0.05)
+simple_rr(4, 6, 1, 1, 1, 0.05)
+simple_rr(4, 2, 1, 1, 1, 0.05)
+simple_rr(1.5, 3, -1, 10, -1, 0.05)
+simple_rr(10, 14, -1, 31, -1, 0.05)
+simple_rr(2, 1.25, -2, 40, -1, 0.025)
 simple_rr(4, 12, -2, 25, -1, 0.05)
-simple_rr(2, 12, -2, 28, -1, 0.05)
 }

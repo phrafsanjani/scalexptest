@@ -7,28 +7,33 @@
 simple_beta(theta0, theta1, r, n, m, alpha)
 }
 \arguments{
-\item{theta0}{$\theta_0$}
+\item{theta0}{A positive numeric value}
 
-\item{theta1}{$\theta_1$}
+\item{theta1}{A positive numeric value}
 
-\item{r}{$r$}
+\item{r}{A non-zero numeric value}
 
-\item{n}{$n$}
+\item{n}{An integer represeting the sample size}
 
-\item{m}{$m$}
+\item{m}{A non-zero numeric value}
 
-\item{alpha}{Significance level $\alpha$}
+\item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A probability value between 0 and 1
+A numeric value between 0 and 1
 }
 \description{
 \code{simple_beta()} computes statistical power at $\theta = \theta_1$ for simple vs simple,
 simple vs one-sided and one-sided vs one-sided tests.
 }
 \examples{
-simple_beta(3, 5, -2, 25, -1, 0.05)
-simple_beta(3, 2, -2, 25, -1, 0.05)
-simple_beta(4, 12, -2, 25, -1, 0.05)
-simple_beta(2, 12, -2, 28, -1, 0.05)
+simple_beta(2, 4, -2, 20, -1, 0.01)
+simple_beta(1 / 8, 1 / 10, -1, 9, -1, 0.05)
+simple_beta(2, 1, 1, 1, 1, 0.05)
+simple_beta(4, 6, 1, 1, 1, 0.05)
+simple_beta(4, 2, 1, 1, 1, 0.05)
+simple_beta(1.5, 3, -1, 10, -1, 0.05)
+simple_beta(10, 14, -1, 31, -1, 0.05)
+simple_beta(2, 1.25, -2, 40, -1, 0.025)
+simple_beta(2, 12, -2, 25, -1, 0.05)
 }
