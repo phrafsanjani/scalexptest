@@ -1,0 +1,230 @@
+---
+title: "Introduction to `scalexptest`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to `scalexptest`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package contains functions for the hypothesis tests proposed in our manuscript,
+*Hypothesis Testing for the Scale-Exponential Family of Distributions*.
+This vignette gives an introduction and a summary of the proposed tests,
+along with all the examples from the manuscript.
+
+```{r setup}
+library(scalexptest)
+```
+
+## Scale-Exponential Family of Distributions
+
+The scale-exponential family has a probability density function (pdf) of the form
+$$f_{\theta}(x) = \theta^m \exp\{\theta^r t(x)\}h(x),$$
+where $\theta > 0, r, m \in \mathbb{R}-\{0\} \text{, and } x \in I$ with $I \subset \mathbb{R}$ continuous and independent of $\theta$.
+Many well-known distributions can be expressed in this form.
+
+For example, choosing $r = -2$, $m = -1$, $t(x) = -\frac{(x - \mu)^2}{2}$ and $h(x) = \frac{1}{\sqrt{2\pi}} I_{(-\infty, +\infty)}(x)$ gives the normal distribution density with mean $\mu$ and variance $\theta^2$.
+
+The computed rejection regions are for the test statistic $-\sum_{i}^{n} t(X_i)$,
+where $X_i$'s are the observed data from the sample.
+
+In the following sections, we summarize the proposed hypothesis tests for the scale-exponential family.
+By choosing the known parameters properly,
+we derive rejection regions and power at certain points for some of these famous distributions.
+
+## Simple Hypotheses
+
+The first problem is testing a simple null hypothesis against a simple alternative:
+
+$$
+\begin{cases}
+    H_0: \theta = \theta_0, \\
+    H_1: \theta = \theta_1.
+\end{cases}
+$$
+
+The proposed test is a most powerful (MP) test,
+which is derived using the Neyman-Pearson lemma.
+The rejection region for this test can be obtained by calling `simple_rr(theta0, theta1, r, n, m, alpha)`,
+where `theta0`, `theta1`, `r` and `m` are
+the parameters $\theta_0$, $\theta_1$, $r$ and $m$ respectively,
+as defined in the scale-exponential family.
+`n` is the sample size $n$ of the observed data,
+and $\alpha$ is the significance level chosen for the problem at hand.
+
+The power of this test at the point $\theta = \theta_1$ is computed by calling `simple_beta(theta0, theta1, r, n, m, alpha)`.
+
+### Examples
+
+We saw previously that choosing $r = -2$ and $m = -1$ gives the normal distribution.
+Therefore, to test $\theta = 2$ vs $\theta = 4$ with an observed data sample size of $n = 20$
+and significance level $\alpha = 0.01$, we call:
+
+```{r}
+simple_rr(2, 4, -2, 20, -1, 0.01)
+```
+
+It can be shown that the exponential distribution with rate parameter $\frac{1}{\theta}$ has a scale-exponential form with $r = -1$ and $m = -1$.
+
+Thus, the rejection region for the MP test of $H_0: \theta = \frac{1}{8}$ vs $H_1: \theta = \frac{1}{10}$
+from an exponential model of size $n = 9$ with significance level $\alpha = 0.05$ is:
+
+```{r}
+simple_rr(1 / 8, 1 / 10, -1, 9, -1, 0.05)
+```
+
+The beta distribution $Beta(\theta, 1)$ has a scale-exponential form with $r = 1$ and $m = 1$.
+Below are two examples from this distribution with only one data point and significance level $\alpha = 0.05$:
+
+```{r}
+simple_rr(2, 1, 1, 1, 1, 0.05)
+simple_rr(4, 6, 1, 1, 1, 0.05)
+simple_rr(4, 2, 1, 1, 1, 0.05)
+```
+
+The power of the five tests above are computed in order:
+
+```{r}
+simple_beta(2, 4, -2, 20, -1, 0.01)
+simple_beta(1 / 8, 1 / 10, -1, 9, -1, 0.05)
+simple_beta(2, 1, 1, 1, 1, 0.05)
+simple_beta(4, 6, 1, 1, 1, 0.05)
+simple_beta(4, 2, 1, 1, 1, 0.05)
+```
+
+## One-Sided Hypotheses
+
+The previous test can be utilized in testing one-sided hypotheses.
+For instance, consider the following problem:
+
+$$
+\begin{cases}
+    H_0: \theta = \theta_0, \\
+    H_1: \theta > \theta_0.
+\end{cases}
+$$
+
+There exists a uniformly most powerful (UMP) level-$\alpha$ test for this problem whose rejection region is derived by substituting any arbitrary value of `theta1` greater than `theta0` in `simple_rr(theta0, theta1, r, n, m, alpha)`.
+Similarly, choosing any arbitrary positive value of `theta1` less than `theta0` gives the rejection region for this problem:
+
+$$
+\begin{cases}
+    H_0: \theta = \theta_0, \\
+    H_1: \theta < \theta_0.
+\end{cases}
+$$
+
+To calculate the value of power at $\theta = \theta_1$,
+we call `simple_rr(theta0, theta1, r, n, m, alpha)` with $\theta_1$ as the value of `theta1`.
+
+The UMP tests for $H_0: \theta \geq \theta_0$ vs $H_1: \theta < \theta_0$ and $H_0: \theta \leq \theta_0$ vs $H_1: \theta > \theta_0$ are obtained analogously.
+
+### Examples
+
+To test $H_0: \theta = 1.5$ vs $H_1: \theta > 1.5$ in a sample of size $n = 10$ from an exponential model with significance level $\alpha = 0.05$,
+we choose $\theta_1 = 3$, an arbitrary number greater than $1.5$:
+
+```{r}
+simple_rr(1.5, 3, -1, 10, -1, 0.05)
+```
+
+The corresponding power is at $\theta = 3$ is:
+
+```{r}
+simple_beta(1.5, 3, -1, 10, -1, 0.05)
+```
+
+Here is a similar example to the previous one, but for testing $H_0: \theta = 10$ vs $H_1: \theta > 10$ with $n = 31$ and $\theta_1 = 14$:
+
+```{r}
+simple_rr(10, 14, -1, 31, -1, 0.05)
+simple_beta(10, 14, -1, 31, -1, 0.05)
+```
+
+To test $H_0: \theta \geq 2$ vs $H_1: \theta < 2$ in a sample of size $n = 40$ from the normal model with significance level $\alpha = 0.025$,
+we choose $\theta_1 = 1.25$, an arbitrary number less than $2$,
+since we also want to calculate the value of the power of this test at $\theta = 1.25$:
+
+```{r}
+simple_rr(2, 1.25, -2, 40, -1, 0.025)
+simple_beta(2, 1.25, -2, 40, -1, 0.025)
+```
+
+Here is a similar example from the normal distribution,
+but for testing $H_0: \theta \leq 4$ vs $H_1: \theta > 4$ with $n = 25$, $\alpha = 0.05$, and $\theta_1 = 12$:
+
+```{r}
+simple_rr(4, 12, -2, 25, -1, 0.05)
+simple_beta(2, 12, -2, 25, -1, 0.05)
+```
+
+## Two-Sided Hypotheses
+
+The next problem is testing a simple null hypothesis vs a two-sided composite alternative:
+
+$$
+\begin{cases}
+    H_0: \theta = \theta_0 \\
+    H_1: \theta \neq \theta_0
+\end{cases}
+$$
+
+There is a uniformly most powerful unbiased (UMPU) level-$\alpha$ test for this problem whose rejection region is computed using
+`two_sided_rr(theta0, r, n, m, alpha, initial_guess)` and its power at $\theta = \theta_1$
+using `two_sided_beta(theta0, theta1 r, n, m, alpha, initial_guess)`.
+
+The variables `theta0`, `r`, `n`, `m` and `alpha` are the same as before,
+and `initial_guess` is a random vector of length two.
+We note, however, that not every random vector yields an answer,
+and that a series of trials and errors may be needed.
+
+### Examples
+
+Below, the rejection region for the UMPU test of $H_0: \theta = 1$ vs $H_1: \theta \neq 1$ in a sample of one data point from the exponential distribution with significance level $\alpha = 0.05$ is computed:
+
+```{r}
+two_sided_rr(1, -1, 1, -1, 0.05, c(0.05, 5))
+```
+
+The power of this test at $\theta = 3$ is:
+
+```{r}
+two_sided_beta(1, 3, -1, 1, -1, 0.05, c(0.05, 5))
+```
+
+The rejection region for the UMPU test of $H_0: \theta = 1$ vs $H_1: \theta \neq 1$ in a sample of size $n = 4$ from the normal model with significance level $\alpha = 0.05$ is:
+
+```{r}
+two_sided_rr(1, -2, 4, -1, 0.05, c(0.3, 6))
+```
+
+The power of this test at $\theta = 5$ is:
+
+```{r}
+two_sided_beta(1, 5, -2, 4, -1, 0.05, c(0.3, 6))
+```
+
+## Interval Hypotheses
+
+Consider the following problem:
+
+$$
+\begin{cases}
+    H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2 \\
+    H_1 : \theta_1 < \theta < \theta_2
+\end{cases}
+$$
+
+There is a UMP level-$\alpha$ test for this problem whose rejection region is computed using
+`interval_rr(theta0, r, n, m, alpha, initial_guess)` and its power at $\theta = \theta_1$
+using `interval_beta(theta0, theta1 r, n, m, alpha, initial_guess)`.
+
+The variables `theta0`, `r`, `n`, `m`, `alpha` and `initial_guess` are the same as the previous section.
+Again, we note that not every random vector leads to the result and a series of trials and errors may be needed.
