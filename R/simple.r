@@ -1,20 +1,13 @@
 simple_critval <- function(theta0, theta1, r, n, m, alpha) {
-  if (r == 0)
-    stop("Error: Parameter 'r' cannot be 0")
-  
-  if (m == 0)
-    stop("Error: Parameter 'm' cannot be 0")
-  
-  if (theta0 <= 0)
-    stop("Error: Parameter 'theta0' must be positive")
-  
-  if (theta1 <= 0)
-    stop("Error: Parameter 'theta1' must be positive")
+  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
+  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
+  if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
+  if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
 
   if (theta1 ^ r > theta0 ^ r)
-    qgamma(alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    qchisq(p = alpha, df = 2 * n * m / r) / (2 * theta0 ^ r)
   else
-    qgamma(1 - alpha, shape = n * m / r, scale = 1 / theta0 ^ r)
+    qchisq(p = 1 - alpha, df = 2 * n * m / r) / (2 * theta0 ^ r)
 }
 
 #' Rejection Region for Simple and One-Sided Hypotheses
@@ -72,9 +65,8 @@ simple_rr <- function(theta0, theta1, r, n, m, alpha) {
 #' simple_beta(2, 12, -2, 25, -1, 0.05)
 #' @export
 simple_beta <- function(theta0, theta1, r, n, m, alpha) {
-  c <- simple_critval(theta0, theta1, r, n, m, alpha)
   if (theta1 ^ r > theta0 ^ r)
-    pgamma(c, shape = n * m / r, scale = 1 / theta1 ^ r)
+    pchisq(q = (theta1 / theta0) ^ r * qchisq(p = alpha, df = 2 * n * m / r), df = 2 * n * m / r)
   else
-    1 - pgamma(c, shape = n * m / r, scale = 1 / theta1 ^ r)
+    1 - pchisq(q = (theta1 / theta0) ^ r * qchisq(p = 1 - alpha, df = 2 * n * m / r), df = 2 * n * m / r)
 }
