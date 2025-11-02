@@ -135,7 +135,7 @@ we choose $\theta_1 = 3$, an arbitrary number greater than $1.5$:
 simple_rr(1.5, 3, -1, 10, -1, 0.05)
 ```
 
-The corresponding power is at $\theta = 3$ is:
+The corresponding power at $\theta = 3$ is:
 
 ```{r}
 simple_beta(1.5, 3, -1, 10, -1, 0.05)
