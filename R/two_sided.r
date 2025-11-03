@@ -1,7 +1,13 @@
 two_sided_critvals <- function(theta0, r, n, m, alpha, initial_guess) {
-  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
-  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
   if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
+  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
+  if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
+  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
+  if (alpha < 0 || alpha > 1) stop("Error: Parameter 'alpha' must be between 0 and 1")
+  if (!is.numeric(initial_guess) || length(initial_guess) != 2)
+    stop("Error: Parameter 'initial_guess' must be a numeric two-element vector")
+  if (initial_guess[1] >= initial_guess[2])
+    stop("Error: initial_guess[1] must be less than initial_guess[2]")
 
   df <- n * m / r
   equations <- function(vars, nu, theta0, r, alpha) {
@@ -58,8 +64,7 @@ two_sided_rr <- function(theta0, r, n, m, alpha, initial_guess) {
 #' two_sided_beta(1, -2, 4, -1, 0.05, c(0.3, 6))
 #' @export
 two_sided_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
+  if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
-  if (theta1 <= 0)
-    stop("Error: Parameter 'theta1' must be positive")
   1 - pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
 }

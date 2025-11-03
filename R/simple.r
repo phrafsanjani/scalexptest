@@ -1,8 +1,10 @@
 simple_critval <- function(theta0, theta1, r, n, m, alpha) {
-  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
-  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
   if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
+  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
+  if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
+  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
+  if (alpha < 0 || alpha > 1) stop("Error: Parameter 'alpha' must be between 0 and 1")
 
   if (theta1 ^ r > theta0 ^ r)
     qchisq(p = alpha, df = 2 * n * m / r) / (2 * theta0 ^ r)
