@@ -9,13 +9,13 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, initial_guess) {
   if (initial_guess[1] >= initial_guess[2])
     stop("Error: initial_guess[1] must be less than initial_guess[2]")
 
-  df <- n * m / r
+  nu <- 2 * n * m / r
   equations <- function(vars, nu, theta0, r, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
 
-    eq1 <- expint::gammainc(df, c1 * theta0 ^ r) - expint::gammainc(df, c2 * theta0 ^ r) - (1 - alpha) * gamma(df)
-    eq2 <- expint::gammainc(df + 1, c1 * theta0 ^ r) - expint::gammainc(df + 1, c2 * theta0 ^ r) - (1 - alpha) * df * gamma(df)
+    eq1 <- expint::gammainc(nu / 2, c1 * theta0 ^ r) - expint::gammainc(nu / 2, c2 * theta0 ^ r) - (1 - alpha) * gamma(nu / 2)
+    eq2 <- expint::gammainc(nu / 2 + 1, c1 * theta0 ^ r) - expint::gammainc(nu / 2 + 1, c2 * theta0 ^ r) - (1 - alpha) * (nu / 2) * gamma(nu / 2)
 
     return(c(eq1, eq2))
   }

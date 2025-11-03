@@ -1,32 +1,30 @@
 interval_critvals <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
-  if (r == 0)
-    stop("Error: Parameter 'r' cannot be 0")
-  
-  if (m == 0)
-    stop("Error: Parameter 'm' cannot be 0")
-  
-  if (theta0 <= 0)
-    stop("Error: Parameter 'theta0' must be positive")
-  
-  if (theta1 <= 0)
-    stop("Error: Parameter 'theta1' must be positive")
+  if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
+  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
+  if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
+  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
+  if (alpha < 0 || alpha > 1) stop("Error: Parameter 'alpha' must be between 0 and 1")
+  if (!is.numeric(initial_guess) || length(initial_guess) != 2)
+    stop("Error: Parameter 'initial_guess' must be a numeric two-element vector")
+  if (initial_guess[1] >= initial_guess[2])
+    stop("Error: initial_guess[1] must be less than initial_guess[2]")
 
-  s <- n * m / r
+  nu <- 2 * n * m / r
   equations <- function(vars, s, theta0, theta1, r, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
         
     if (r > 0) {
-    eq1 <- expint::gammainc(s, c1 * theta0^r) - expint::gammainc(s, c2 * theta0^r) - alpha * gamma(s)
-      eq2 <- expint::gammainc(s, c1 * theta1^r) - expint::gammainc(s, c2 * theta1^r) - alpha * gamma(s)
+      eq1 <- expint::gammainc(nu / 2, c1 * theta0^r) - expint::gammainc(nu / 2, c2 * theta0^r) - alpha * gamma(nu / 2)
+      eq2 <- expint::gammainc(nu / 2, c1 * theta1^r) - expint::gammainc(nu / 2, c2 * theta1^r) - alpha * gamma(nu / 2)
     } else {
-      eq1 <- expint::gammainc(s, c1 * theta0^r) - expint::gammainc(s, c2 * theta0^r) - (1 - alpha) * gamma(s)
-      eq2 <- expint::gammainc(s, c1 * theta1^r) - expint::gammainc(s, c2 * theta1^r) - (1 - alpha) * gamma(s)
+      eq1 <- expint::gammainc(nu / 2, c1 * theta0^r) - expint::gammainc(nu / 2, c2 * theta0^r) - (1 - alpha) * gamma(nu / 2)
+      eq2 <- expint::gammainc(nu / 2, c1 * theta1^r) - expint::gammainc(nu / 2, c2 * theta1^r) - (1 - alpha) * gamma(nu / 2)
     }
         
     return(c(eq1, eq2))
   }
-  solution <- pracma::fsolve(equations, initial_guess, s = s, theta0 = theta0, theta1 = theta1, r = r, alpha = alpha)
+  solution <- pracma::fsolve(equations, initial_guess, nu = nu, theta0 = theta0, theta1 = theta1, r = r, alpha = alpha)
 
   c1 <- solution$x[1]
   c2 <- solution$x[2]
@@ -71,7 +69,7 @@ interval_rr <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
 inetrval_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
   c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
   if (r > 0)
-    pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) - pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)
+    pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) - pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
   else
-    1 - pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) + pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)
+    1 - pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
 }
