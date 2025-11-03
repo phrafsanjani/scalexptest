@@ -1,24 +1,19 @@
 two_sided_critvals <- function(theta0, r, n, m, alpha, initial_guess) {
-  if (r == 0)
-    stop("Error: Parameter 'r' cannot be 0")
-  
-  if (m == 0)
-    stop("Error: Parameter 'm' cannot be 0")
-  
-  if (theta0 <= 0)
-    stop("Error: Parameter 'theta0' must be positive")
-  
-  s <- n * m / r
-  equations <- function(vars, s, theta0, r, alpha) {
+  if (r == 0) stop("Error: Parameter 'r' cannot be 0")
+  if (m == 0) stop("Error: Parameter 'm' cannot be 0")
+  if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
+
+  df <- n * m / r
+  equations <- function(vars, nu, theta0, r, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
-    
-    eq1 <- expint::gammainc(s, c1 * theta0 ^ r) - expint::gammainc(s, c2 * theta0 ^ r) - (1 - alpha) * gamma(s)
-    eq2 <- expint::gammainc(1 + s, c1 * theta0 ^ r) - expint::gammainc(1 + s, c2 * theta0 ^ r) - (1 - alpha) * s * gamma(s)
+
+    eq1 <- expint::gammainc(df, c1 * theta0 ^ r) - expint::gammainc(df, c2 * theta0 ^ r) - (1 - alpha) * gamma(df)
+    eq2 <- expint::gammainc(df + 1, c1 * theta0 ^ r) - expint::gammainc(df + 1, c2 * theta0 ^ r) - (1 - alpha) * df * gamma(df)
 
     return(c(eq1, eq2))
   }
-  solution <- pracma::fsolve(equations, initial_guess, s = s, theta0 = theta0, r = r, alpha = alpha)
+  solution <- pracma::fsolve(equations, initial_guess, nu = nu, theta0 = theta0, r = r, alpha = alpha)
 
   c1 <- solution$x[1]
   c2 <- solution$x[2]
@@ -66,5 +61,5 @@ two_sided_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
   c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
   if (theta1 <= 0)
     stop("Error: Parameter 'theta1' must be positive")
-  1 - pgamma(c[2], shape = n * m / r, scale = 1 / theta1 ^ r) + pgamma(c[1], shape = n * m / r, scale = 1 / theta1 ^ r)
+  1 - pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
 }
