@@ -14,8 +14,8 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, initial_guess) {
     c1 <- vars[1]
     c2 <- vars[2]
 
-    eq1 <- expint::gammainc(nu / 2, c1 * theta0 ^ r) - expint::gammainc(nu / 2, c2 * theta0 ^ r) - (1 - alpha) * gamma(nu / 2)
-    eq2 <- expint::gammainc(nu / 2 + 1, c1 * theta0 ^ r) - expint::gammainc(nu / 2 + 1, c2 * theta0 ^ r) - (1 - alpha) * (nu / 2) * gamma(nu / 2)
+    eq1 <- expint::gammainc(nu / 2, c1 / 2) - expint::gammainc(nu / 2, c2 / 2) - (1 - alpha) * gamma(nu / 2)
+    eq2 <- expint::gammainc(nu / 2 + 1, c1 / 2) - expint::gammainc(nu / 2 + 1, c2 / 2) - (1 - alpha) * (nu / 2) * gamma(nu / 2)
 
     return(c(eq1, eq2))
   }
@@ -66,5 +66,5 @@ two_sided_rr <- function(theta0, r, n, m, alpha, initial_guess) {
 two_sided_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   c <- two_sided_critvals(theta0, r, n, m, alpha, initial_guess)
-  1 - pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
+  1 - pchisq(q = (theta1 / theta0) ^ r * c[2], df = 2 * n * m / r) + pchisq(q = (theta1 / theta0) ^ r * c[1], df = 2 * n * m / r)
 }
