@@ -15,11 +15,11 @@ interval_critvals <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
     c2 <- vars[2]
         
     if (r > 0) {
-      eq1 <- expint::gammainc(nu / 2, c1 * theta0^r) - expint::gammainc(nu / 2, c2 * theta0^r) - alpha * gamma(nu / 2)
-      eq2 <- expint::gammainc(nu / 2, c1 * theta1^r) - expint::gammainc(nu / 2, c2 * theta1^r) - alpha * gamma(nu / 2)
+      eq1 <- expint::gammainc(nu / 2, 0.5 * c1) - expint::gammainc(nu / 2, 0.5 * c2) - alpha * gamma(nu / 2)
+      eq2 <- expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c1) - expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c2) - alpha * gamma(nu / 2)
     } else {
-      eq1 <- expint::gammainc(nu / 2, c1 * theta0^r) - expint::gammainc(nu / 2, c2 * theta0^r) - (1 - alpha) * gamma(nu / 2)
-      eq2 <- expint::gammainc(nu / 2, c1 * theta1^r) - expint::gammainc(nu / 2, c2 * theta1^r) - (1 - alpha) * gamma(nu / 2)
+      eq1 <- expint::gammainc(nu / 2, 0.5 * c1) - expint::gammainc(nu / 2, 0.5 * c2) - (1 - alpha) * gamma(nu / 2)
+      eq2 <- expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c1) - expint::gammainc(nu / 2, 0.5 * 0.5 * (theta1 / theta0) ^ r * c2) - (1 - alpha) * gamma(nu / 2)
     }
         
     return(c(eq1, eq2))
@@ -69,7 +69,7 @@ interval_rr <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
 inetrval_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
   c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
   if (r > 0)
-    pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) - pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
+    pchisq(q = (theta1 / theta0) ^ r * c[2], df = 2 * n * m / r) - pchisq(q = (theta1 / theta0) ^ r * c[1], df = 2 * n * m / r)
   else
-    1 - pchisq(q = 2 * c[2] * theta1 ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta1 ^ r, df = 2 * n * m / r)
+    1 - pchisq(q = (theta1 / theta0) ^ r * c[2], df = 2 * n * m / r) + pchisq(q = (theta1 / theta0) ^ r * c[1], df = 2 * n * m / r)
 }
