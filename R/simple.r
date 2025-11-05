@@ -7,9 +7,9 @@ simple_critval <- function(theta0, theta1, r, n, m, alpha) {
   if (alpha < 0 || alpha > 1) stop("Error: Parameter 'alpha' must be between 0 and 1")
 
   if (theta1 ^ r > theta0 ^ r)
-    qchisq(p = alpha, df = 2 * n * m / r) / (2 * theta0 ^ r)
+    qchisq(p = alpha, df = 2 * n * m / r)
   else
-    qchisq(p = 1 - alpha, df = 2 * n * m / r) / (2 * theta0 ^ r)
+    qchisq(p = 1 - alpha, df = 2 * n * m / r)
 }
 
 #' Rejection Region for Simple and One-Sided Hypotheses
@@ -45,7 +45,7 @@ simple_rr <- function(theta0, theta1, r, n, m, alpha) {
 
 #' Power for Simple and One-Sided Hypotheses
 #' 
-#' `simple_beta()` computes statistical power at $\theta = \theta_1$ for simple vs simple,
+#' `simple_beta()` computes statistical power at theta1 for simple vs simple,
 #' simple vs one-sided and one-sided vs one-sided tests.
 #' 
 #' @param theta0 A positive numeric value
@@ -67,8 +67,9 @@ simple_rr <- function(theta0, theta1, r, n, m, alpha) {
 #' simple_beta(2, 12, -2, 25, -1, 0.05)
 #' @export
 simple_beta <- function(theta0, theta1, r, n, m, alpha) {
+  c <- simple_critval(theta0, theta1, r, n, m, alpha)
   if (theta1 ^ r > theta0 ^ r)
-    pchisq(q = (theta1 / theta0) ^ r * qchisq(p = alpha, df = 2 * n * m / r), df = 2 * n * m / r)
+    pchisq(q = (theta1 / theta0) ^ r * c, df = 2 * n * m / r)
   else
-    1 - pchisq(q = (theta1 / theta0) ^ r * qchisq(p = 1 - alpha, df = 2 * n * m / r), df = 2 * n * m / r)
+    1 - pchisq(q = (theta1 / theta0) ^ r * c, df = 2 * n * m / r)
 }
