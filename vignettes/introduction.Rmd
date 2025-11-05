@@ -32,7 +32,7 @@ Many well-known distributions can be expressed in this form.
 
 For example, choosing $r = -2$, $m = -1$, $t(x) = -\frac{(x - \mu)^2}{2}$ and $h(x) = \frac{1}{\sqrt{2\pi}} I_{(-\infty, +\infty)}(x)$ gives the normal distribution density with mean $\mu$ and variance $\theta^2$.
 
-The computed rejection regions are for the test statistic $-\sum_{i}^{n} t(X_i)$,
+The computed rejection regions are for the test statistic $2(-\sum_{i}^{n}t(X_i))\theta_0^r$,
 where $X_i$'s are the observed data from the sample.
 
 In the following sections, we summarize the proposed hypothesis tests for the scale-exponential family.
