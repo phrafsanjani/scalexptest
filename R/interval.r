@@ -1,75 +1,116 @@
-interval_critvals <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
-  if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
+#' Rejection Region for Interval Hypothesis Tests
+#' 
+#' `interval_critvals()` computes the critival values for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' 
+#' @param theta1 A positive numeric value
+#' @param theta2 A positive numeric value
+#' @param r A non-zero numeric value
+#' @param n An integer represeting the sample size
+#' @param m A non-zero numeric value
+#' @param alpha Numeric value between 0 and 1 representing the significance level
+#' @returns A numeric vector
+#' @examples
+#' interval_critvals(1, sqrt(3), -2, 25, -1, 0.01)
+#' @export
+interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
+  if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
+  if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
   if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
   if (m == 0) stop("Error: Parameter 'm' cannot be 0")
   if (alpha < 0 || alpha > 1) stop("Error: Parameter 'alpha' must be between 0 and 1")
-  if (!is.numeric(initial_guess) || length(initial_guess) != 2)
-    stop("Error: Parameter 'initial_guess' must be a numeric two-element vector")
-  if (initial_guess[1] >= initial_guess[2])
-    stop("Error: initial_guess[1] must be less than initial_guess[2]")
 
   nu <- 2 * n * m / r
-  equations <- function(vars, s, theta0, theta1, r, alpha) {
+
+  equations <- function(vars, nu, theta1, theta2, r, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
-        
+
     if (r > 0) {
-      eq1 <- expint::gammainc(nu / 2, 0.5 * c1) - expint::gammainc(nu / 2, 0.5 * c2) - alpha * gamma(nu / 2)
-      eq2 <- expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c1) - expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c2) - alpha * gamma(nu / 2)
+      eq1 <- pchisq(2 * c2 * theta1 ^ r, nu) - pchisq(2 * c1 * theta1 ^ r, nu) - (1 - alpha)
+      eq2 <- pchisq(2 * c2 * theta2 ^ r, nu) - pchisq(2 * c1 * theta2 ^ r, nu) - (1 - alpha)
     } else {
-      eq1 <- expint::gammainc(nu / 2, 0.5 * c1) - expint::gammainc(nu / 2, 0.5 * c2) - (1 - alpha) * gamma(nu / 2)
-      eq2 <- expint::gammainc(nu / 2, 0.5 * (theta1 / theta0) ^ r * c1) - expint::gammainc(nu / 2, 0.5 * 0.5 * (theta1 / theta0) ^ r * c2) - (1 - alpha) * gamma(nu / 2)
+      eq1 <- pchisq(2 * c2 * theta1 ^ r, nu) - pchisq(2 * c1 * theta1 ^ r, nu) - alpha
+      eq2 <- pchisq(2 * c2 * theta2 ^ r, nu) - pchisq(2 * c1 * theta2 ^ r, nu) - alpha
     }
-        
+
     return(c(eq1, eq2))
   }
-  solution <- pracma::fsolve(equations, initial_guess, nu = nu, theta0 = theta0, theta1 = theta1, r = r, alpha = alpha)
 
-  c1 <- solution$x[1]
-  c2 <- solution$x[2]
+  eps <- 0.01
+  c1 <- 0
+  max_iterations <- 5000
+  found_solution <- FALSE
 
-  return(c(c1, c2))
+  for (i in seq_len(max_iterations)) {
+    if (r > 0) {
+      c2 <- qchisq(1 - alpha + pchisq(2 * c1 * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+    } else {
+      c2 <- qchisq(alpha + pchisq(2 * c1 * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+    }
+    
+    solution <- suppressWarnings(
+      tryCatch({
+        pracma::fsolve(equations, c(c1, c2), nu = nu, theta1 = theta1, theta2 = theta2, r = r, alpha = alpha)
+      }, error = function(e) NULL)
+    )
+    
+    if (!is.null(solution) && all(is.finite(solution$x))) {
+      found_solution <- TRUE
+      break
+    }
+    
+    c1 <- c1 + eps
+  }
+
+  if (!found_solution) {
+    stop("No solution found after ", max_iterations, " iterations. Consider adjusting eps or initial conditions.")
+  }
+
+  return(c(solution$x[1], solution$x[2]))
 }
 
 #' Rejection Region for Interval Hypothesis Tests
 #' 
 #' `interval_rr()` computes the rejection region for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
 #' 
-#' @param theta0 A positive numeric value
 #' @param theta1 A positive numeric value
+#' @param theta2 A positive numeric value
 #' @param r A non-zero numeric value
 #' @param n An integer represeting the sample size
 #' @param m A non-zero numeric value
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @param initial_guess Numeric vector of length 2
 #' @returns A character vector
+#' @examples
+#' interval_rr(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
-interval_rr <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
-  c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
+interval_rr <- function(theta1, theta2, r, n, m, alpha) {
+  c <- interval_critvals(theta1, theta2, r, n, m, alpha)
   if (r > 0)
-    sprintf("(%4f, %4f)", c[1], c[2])
-  else
     sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
+  else
+    sprintf("(%4f, %4f)", c[1], c[2])
 }
 
 #' Power for Interval Hypothesis Tests
 #' 
-#' `interval_beta()` computes statistical power at $\theta = \theta_1$ for interval hypothesis tests.
+#' `interval_beta()` computes statistical power at $\theta$ for interval hypothesis tests.
 #' 
-#' @param theta0 A positive numeric value
 #' @param theta1 A positive numeric value
+#' @param theta2 A positive numeric value
+#' @param theta A positive numeric value
 #' @param r A non-zero numeric value
 #' @param n An integer represeting the sample size
 #' @param m A non-zero numeric value
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @param initial_guess Numeric vector of length 2
 #' @returns A numeric value between 0 and 1
+#' @examples
+#' interval_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 #' @export
-inetrval_beta <- function(theta0, theta1, r, n, m, alpha, initial_guess) {
-  c <- interval_critvals(theta0, theta1, r, n, m, alpha, initial_guess)
+interval_beta <- function(theta0, theta1, theta, r, n, m, alpha) {
+  c <- interval_critvals(theta0, theta1, r, n, m, alpha)
   if (r > 0)
-    pchisq(q = (theta1 / theta0) ^ r * c[2], df = 2 * n * m / r) - pchisq(q = (theta1 / theta0) ^ r * c[1], df = 2 * n * m / r)
+    1 - pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
   else
-    1 - pchisq(q = (theta1 / theta0) ^ r * c[2], df = 2 * n * m / r) + pchisq(q = (theta1 / theta0) ^ r * c[1], df = 2 * n * m / r)
+    pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) - pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
 }

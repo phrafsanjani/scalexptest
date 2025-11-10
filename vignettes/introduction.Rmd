@@ -236,3 +236,10 @@ using `interval_beta(theta0, theta1 r, n, m, alpha, initial_guess)`.
 
 The variables `theta0`, `r`, `n`, `m`, `alpha` and `initial_guess` are the same as the previous section.
 Again, we note that not every random vector leads to the result and a series of trials and errors may be needed.
+
+### Example
+
+```{r}
+interval_rr(1, sqrt(3), -2, 25, -1, 0.01)
+interval_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+```

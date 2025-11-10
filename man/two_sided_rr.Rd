@@ -4,7 +4,7 @@
 \alias{two_sided_rr}
 \title{Rejection Region for Two-Sided Hypothesis Tests}
 \usage{
-two_sided_rr(theta0, r, n, m, alpha, initial_guess)
+two_sided_rr(theta0, r, n, m, alpha)
 }
 \arguments{
 \item{theta0}{A positive numeric value}
@@ -16,8 +16,6 @@ two_sided_rr(theta0, r, n, m, alpha, initial_guess)
 \item{m}{A non-zero numeric value}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
-
-\item{initial_guess}{Numeric vector of length 2}
 }
 \value{
 A character vector
@@ -26,6 +24,6 @@ A character vector
 \code{two_sided_rr()} computes the rejection region for simple vs two-sided hypotheses.
 }
 \examples{
-two_sided_rr(1, -1, 1, -1, 0.05, c(0.05, 5))
-two_sided_rr(1, -2, 4, -1, 0.05, c(0.3, 6))
+two_sided_rr(1, -1, 1, -1, 0.05)
+two_sided_rr(1, -2, 4, -1, 0.05)
 }

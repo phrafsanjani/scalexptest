@@ -4,7 +4,7 @@
 \alias{two_sided_beta}
 \title{Power for Two-Sided Hypothesis Tests}
 \usage{
-two_sided_beta(theta0, theta1, r, n, m, alpha, initial_guess)
+two_sided_beta(theta0, theta1, r, n, m, alpha)
 }
 \arguments{
 \item{theta0}{A positive numeric value}
@@ -18,8 +18,6 @@ two_sided_beta(theta0, theta1, r, n, m, alpha, initial_guess)
 \item{m}{A non-zero numeric value}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
-
-\item{initial_guess}{Numeric vector of length 2}
 }
 \value{
 A numeric value between 0 and 1
@@ -28,6 +26,6 @@ A numeric value between 0 and 1
 \code{two_sided_beta()} computes statistical power at $\theta = \theta_1$ for simple vs two-sided hypotheses.
 }
 \examples{
-two_sided_beta(1, -1, 1, -1, 0.05, c(0.05, 5))
-two_sided_beta(1, -2, 4, -1, 0.05, c(0.3, 6))
+two_sided_beta(1, -1, 1, -1, 0.05)
+two_sided_beta(1, -2, 4, -1, 0.05)
 }

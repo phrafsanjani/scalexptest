@@ -23,7 +23,7 @@ simple_beta(theta0, theta1, r, n, m, alpha)
 A numeric value between 0 and 1
 }
 \description{
-\code{simple_beta()} computes statistical power at $\theta = \theta_1$ for simple vs simple,
+\code{simple_beta()} computes statistical power at theta1 for simple vs simple,
 simple vs one-sided and one-sided vs one-sided tests.
 }
 \examples{

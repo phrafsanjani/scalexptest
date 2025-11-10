@@ -19,20 +19,18 @@ two_sided_critvals <- function(theta0, r, n, m, alpha) {
 
   eps <- 0.01
   c1 <- 0
-  max_iterations <- 1000  # Prevent infinite loops
+  max_iterations <- 1000
   found_solution <- FALSE
 
   for (i in seq_len(max_iterations)) {
     c2 <- qchisq(1 - alpha + pchisq(2 * c1 * theta0 ^ r, nu), df = nu) / (2 * theta0 ^ r)
     
-    # Try to find solution
     solution <- suppressWarnings(
       tryCatch({
         pracma::fsolve(equations, c(c1, c2), nu = nu, theta0 = theta0, r = r, alpha = alpha)
       }, error = function(e) NULL)
     )
     
-    # Check if solution is valid
     if (!is.null(solution) && all(is.finite(solution$x))) {
       found_solution <- TRUE
       break
