@@ -38,20 +38,19 @@ interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
   }
 
   eps <- 0.01
-  c1 <- 0
+  a <- 0
   max_iterations <- 5000
   found_solution <- FALSE
 
   for (i in seq_len(max_iterations)) {
-    if (r > 0) {
-      c2 <- qchisq(1 - alpha + pchisq(2 * c1 * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
-    } else {
-      c2 <- qchisq(alpha + pchisq(2 * c1 * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
-    }
+    if (r > 0)
+      b <- qchisq(1 - alpha + pchisq(2 * a * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+    else
+      b <- qchisq(alpha + pchisq(2 * a * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
     
     solution <- suppressWarnings(
       tryCatch({
-        pracma::fsolve(equations, c(c1, c2), nu = nu, theta1 = theta1, theta2 = theta2, r = r, alpha = alpha)
+        pracma::fsolve(equations, c(a, b), nu = nu, theta1 = theta1, theta2 = theta2, r = r, alpha = alpha)
       }, error = function(e) NULL)
     )
     
@@ -60,12 +59,11 @@ interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
       break
     }
     
-    c1 <- c1 + eps
+    a <- a + eps
   }
 
-  if (!found_solution) {
-    stop("No solution found after ", max_iterations, " iterations. Consider adjusting eps or initial conditions.")
-  }
+  if (!found_solution)
+    stop("No solution found after ", max_iterations, " iterations. Consider adjusting 'eps' or 'max_iterations'.")
 
   return(c(solution$x[1], solution$x[2]))
 }
@@ -107,8 +105,8 @@ interval_rr <- function(theta1, theta2, r, n, m, alpha) {
 #' @examples
 #' interval_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 #' @export
-interval_beta <- function(theta0, theta1, theta, r, n, m, alpha) {
-  c <- interval_critvals(theta0, theta1, r, n, m, alpha)
+interval_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
+  c <- interval_critvals(theta1, theta2, r, n, m, alpha)
   if (r > 0)
     1 - pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
   else
