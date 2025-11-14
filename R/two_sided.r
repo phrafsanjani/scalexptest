@@ -12,7 +12,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha) {
     c2 <- vars[2]
 
     eq1 <- pchisq(2 * c2 * theta0 ^ r, nu) - pchisq(2 * c1 * theta0 ^ r, nu) - (1 - alpha)
-    eq2 <- expint::gammainc(nu / 2 + 1, c1 * theta0 ^ r) - expint::gammainc(nu / 2 + 1, c2 * theta0 ^ r) - (1 - alpha) * (nu / 2) * gamma(nu / 2)
+    eq2 <- pchisq(2 * c2 * theta0 ^ r, nu + 2) - pchisq(2 * c1 * theta0 ^ r, nu + 2) - (1 - alpha)
 
     return(c(eq1, eq2))
   }
