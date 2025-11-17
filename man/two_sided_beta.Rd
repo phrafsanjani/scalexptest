@@ -4,12 +4,10 @@
 \alias{two_sided_beta}
 \title{Power for Two-Sided Hypothesis Tests}
 \usage{
-two_sided_beta(theta0, theta1, r, n, m, alpha)
+two_sided_beta(theta0, theta, r, n, m, alpha)
 }
 \arguments{
 \item{theta0}{A positive numeric value}
-
-\item{theta1}{A positive numeric value}
 
 \item{r}{A non-zero numeric value}
 
@@ -18,6 +16,8 @@ two_sided_beta(theta0, theta1, r, n, m, alpha)
 \item{m}{A non-zero numeric value}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
+
+\item{theta1}{A positive numeric value}
 }
 \value{
 A numeric value between 0 and 1

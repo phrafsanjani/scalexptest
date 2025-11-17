@@ -219,6 +219,11 @@ The power of this test at $\theta = 5$ is:
 two_sided_beta(1, 5, -2, 4, -1, 0.05)
 ```
 
+```{r}
+two_sided_rr(5, -1, 500, -1, 0.05, a = 2000, eps = 1)
+two_sided_beta(5, 5.75, -1, 500, -1, 0.05, a = 2000, eps = 1)
+```
+
 ## Interval Hypotheses
 
 Consider the following problem:
@@ -240,6 +245,13 @@ Again, we note that not every random vector leads to the result and a series of 
 ### Example
 
 ```{r}
-interval_rr(1, sqrt(3), -2, 25, -1, 0.01)
-interval_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+interval_alt_rr(1, sqrt(3), -2, 25, -1, 0.01)
+interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+```
+
+### Example
+
+```{r}
+#interval_null_rr(2, , -2, 25, -1, 0.01)
+#interval_null_beta(1, , sqrt(2), -2, 25, -1, 0.01)
 ```

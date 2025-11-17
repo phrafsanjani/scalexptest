@@ -1,4 +1,4 @@
-two_sided_critvals <- function(theta0, r, n, m, alpha) {
+two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
   if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
   if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
@@ -17,9 +17,6 @@ two_sided_critvals <- function(theta0, r, n, m, alpha) {
     return(c(eq1, eq2))
   }
 
-  eps <- 0.01
-  a <- 0
-  max_iterations <- 1000
   found_solution <- FALSE
 
   for (i in seq_len(max_iterations)) {
@@ -31,7 +28,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha) {
       }, error = function(e) NULL)
     )
     
-    if (!is.null(solution) && all(is.finite(solution$x))) {
+    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] < solution$x[2]) {
       found_solution <- TRUE
       break
     }
@@ -59,8 +56,8 @@ two_sided_critvals <- function(theta0, r, n, m, alpha) {
 #' two_sided_rr(1, -1, 1, -1, 0.05)
 #' two_sided_rr(1, -2, 4, -1, 0.05)
 #' @export
-two_sided_rr <- function(theta0, r, n, m, alpha) {
-  c <- two_sided_critvals(theta0, r, n, m, alpha)
+two_sided_rr <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+  c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
   sprintf("(%f, %4f] U [%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
@@ -79,8 +76,8 @@ two_sided_rr <- function(theta0, r, n, m, alpha) {
 #' two_sided_beta(1, -1, 1, -1, 0.05)
 #' two_sided_beta(1, -2, 4, -1, 0.05)
 #' @export
-two_sided_beta <- function(theta0, theta, r, n, m, alpha) {
+two_sided_beta <- function(theta0, theta, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
   if (theta <= 0) stop("Error: Parameter 'theta' must be positive")
-  c <- two_sided_critvals(theta0, r, n, m, alpha)
+  c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
   1 - pchisq(q = 2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta ^ r, df = 2 * n * m / r)
 }

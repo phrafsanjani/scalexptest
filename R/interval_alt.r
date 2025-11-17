@@ -1,6 +1,6 @@
 #' Rejection Region for Interval Hypothesis Tests
 #' 
-#' `interval_critvals()` computes the critival values for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' `interval_alt_critvals()` computes the critival values for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
 #' 
 #' @param theta1 A positive numeric value
 #' @param theta2 A positive numeric value
@@ -10,9 +10,9 @@
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A numeric vector
 #' @examples
-#' interval_critvals(1, sqrt(3), -2, 25, -1, 0.01)
+#' interval_alt_critvals(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
-interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
+interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
@@ -70,7 +70,7 @@ interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
 
 #' Rejection Region for Interval Hypothesis Tests
 #' 
-#' `interval_rr()` computes the rejection region for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' `interval_alt_rr()` computes the rejection region for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
 #' 
 #' @param theta1 A positive numeric value
 #' @param theta2 A positive numeric value
@@ -80,10 +80,10 @@ interval_critvals <- function(theta1, theta2, r, n, m, alpha) {
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A character vector
 #' @examples
-#' interval_rr(1, sqrt(3), -2, 25, -1, 0.01)
+#' interval_alt_rr(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
-interval_rr <- function(theta1, theta2, r, n, m, alpha) {
-  c <- interval_critvals(theta1, theta2, r, n, m, alpha)
+interval_alt_rr <- function(theta1, theta2, r, n, m, alpha) {
+  c <- interval_alt_critvals(theta1, theta2, r, n, m, alpha)
   if (r > 0)
     sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
   else
@@ -92,7 +92,7 @@ interval_rr <- function(theta1, theta2, r, n, m, alpha) {
 
 #' Power for Interval Hypothesis Tests
 #' 
-#' `interval_beta()` computes statistical power at $\theta$ for interval hypothesis tests.
+#' `interval_alt_beta()` computes statistical power at $\theta$ for interval hypothesis tests.
 #' 
 #' @param theta1 A positive numeric value
 #' @param theta2 A positive numeric value
@@ -103,10 +103,10 @@ interval_rr <- function(theta1, theta2, r, n, m, alpha) {
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A numeric value between 0 and 1
 #' @examples
-#' interval_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+#' interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 #' @export
-interval_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
-  c <- interval_critvals(theta1, theta2, r, n, m, alpha)
+interval_alt_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
+  c <- interval_alt_critvals(theta1, theta2, r, n, m, alpha)
   if (r > 0)
     1 - pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
   else
