@@ -27,11 +27,11 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
     c2 <- vars[2]
 
     if (r > 0) {
-      eq1 <- pchisq(2 * c2 * theta1 ^ r, nu) - pchisq(2 * c1 * theta1 ^ r, nu) - (1 - alpha)
-      eq2 <- pchisq(2 * c2 * theta2 ^ r, nu) - pchisq(2 * c1 * theta2 ^ r, nu) - (1 - alpha)
+      eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
+      eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha)
     } else {
-      eq1 <- pchisq(2 * c2 * theta1 ^ r, nu) - pchisq(2 * c1 * theta1 ^ r, nu) - alpha
-      eq2 <- pchisq(2 * c2 * theta2 ^ r, nu) - pchisq(2 * c1 * theta2 ^ r, nu) - alpha
+      eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - alpha
+      eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - alpha
     }
 
     return(c(eq1, eq2))
@@ -44,9 +44,9 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
 
   for (i in seq_len(max_iterations)) {
     if (r > 0)
-      b <- qchisq(1 - alpha + pchisq(2 * a * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+      b <- qchisq(1 - alpha + pchisq(a, nu), nu)
     else
-      b <- qchisq(alpha + pchisq(2 * a * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+      b <- qchisq(alpha + pchisq(a, nu), nu)
     
     solution <- suppressWarnings(
       tryCatch({
@@ -108,7 +108,7 @@ interval_alt_rr <- function(theta1, theta2, r, n, m, alpha) {
 interval_alt_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
   c <- interval_alt_critvals(theta1, theta2, r, n, m, alpha)
   if (r > 0)
-    1 - pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
+    1 - pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
   else
-    pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) - pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
+    pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) - pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
 }

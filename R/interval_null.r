@@ -10,9 +10,9 @@
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A numeric vector
 #' @examples
-#' interval_null_critvals(1, sqrt(3), -2, 25, -1, 0.01)
+#' interval_null_critvals(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
-interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
+interval_null_critvals <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
@@ -26,19 +26,16 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
 
-    eq1 <- pchisq(2 * c2 * theta1 ^ r, nu) - pchisq(2 * c1 * theta1 ^ r, nu) - (1 - alpha)
-    eq2 <- pchisq(2 * c2 * theta2 ^ r, nu) - pchisq(2 * c1 * theta2 ^ r, nu) - (1 - alpha)
+    eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
+    eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha)
 
     return(c(eq1, eq2))
   }
 
-  eps <- 0.01
-  a <- 0
-  max_iterations <- 5000
   found_solution <- FALSE
 
   for (i in seq_len(max_iterations)) {
-    b <- qchisq(1 - alpha + pchisq(2 * a * theta1 ^ r, nu), nu) / (2 * theta1 ^ r)
+    b <- qchisq(1 - alpha + pchisq(a, nu), nu)
     
     solution <- suppressWarnings(
       tryCatch({
@@ -46,7 +43,7 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
       }, error = function(e) NULL)
     )
     
-    if (!is.null(solution) && all(is.finite(solution$x))) {
+    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] < solution$x[2]) {
       found_solution <- TRUE
       break
     }
@@ -72,10 +69,10 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A character vector
 #' @examples
-#' interval_null_rr(1, sqrt(3), -2, 25, -1, 0.01)
+#' interval_null_rr(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
-interval_null_rr <- function(theta1, theta2, r, n, m, alpha) {
-  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha)
+interval_null_rr <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha, a, eps, max_iterations)
   sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
@@ -92,9 +89,9 @@ interval_null_rr <- function(theta1, theta2, r, n, m, alpha) {
 #' @param alpha Numeric value between 0 and 1 representing the significance level
 #' @returns A numeric value between 0 and 1
 #' @examples
-#' interval_null_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+#' interval_null_beta(1.75, 2.25, 2.29, -2, 200, -1, 0.05)
 #' @export
-interval_null_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
-  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha)
-  1 - pchisq(2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(2 * c[1] * theta ^ r, df = 2 * n * m / r)
+interval_null_beta <- function(theta1, theta2, theta, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha, a, eps, max_iterations)
+  1 - pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
 }

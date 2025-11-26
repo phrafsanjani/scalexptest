@@ -11,8 +11,8 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
     c1 <- vars[1]
     c2 <- vars[2]
 
-    eq1 <- pchisq(2 * c2 * theta0 ^ r, nu) - pchisq(2 * c1 * theta0 ^ r, nu) - (1 - alpha)
-    eq2 <- pchisq(2 * c2 * theta0 ^ r, nu + 2) - pchisq(2 * c1 * theta0 ^ r, nu + 2) - (1 - alpha)
+    eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
+    eq2 <- pchisq(c2, nu + 2) - pchisq(c1, nu + 2) - (1 - alpha)
 
     return(c(eq1, eq2))
   }
@@ -20,7 +20,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
   found_solution <- FALSE
 
   for (i in seq_len(max_iterations)) {
-    b <- qchisq(1 - alpha + pchisq(2 * a * theta0 ^ r, nu), df = nu) / (2 * theta0 ^ r)
+    b <- qchisq(1 - alpha + pchisq(a, nu), df = nu)
     
     solution <- suppressWarnings(
       tryCatch({
@@ -55,6 +55,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
 #' @examples
 #' two_sided_rr(1, -1, 1, -1, 0.05)
 #' two_sided_rr(1, -2, 4, -1, 0.05)
+#' two_sided_rr(5, -1, 500, -1, 0.05, a = 2000, eps = 1)
 #' @export
 two_sided_rr <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
   c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
@@ -75,9 +76,10 @@ two_sided_rr <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iteratio
 #' @examples
 #' two_sided_beta(1, -1, 1, -1, 0.05)
 #' two_sided_beta(1, -2, 4, -1, 0.05)
+#' two_sided_beta(5, 5.75, -1, 500, -1, 0.05, a = 2000, eps = 1)
 #' @export
 two_sided_beta <- function(theta0, theta, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
   if (theta <= 0) stop("Error: Parameter 'theta' must be positive")
   c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
-  1 - pchisq(q = 2 * c[2] * theta ^ r, df = 2 * n * m / r) + pchisq(q = 2 * c[1] * theta ^ r, df = 2 * n * m / r)
+  1 - pchisq(theta ^ r / theta0 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta0 ^ r * c[1], df = 2 * n * m / r)
 }
