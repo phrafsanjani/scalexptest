@@ -69,7 +69,7 @@ simple_rr <- function(theta0, theta1, r, n, m, alpha) {
 simple_beta <- function(theta0, theta1, r, n, m, alpha) {
   c <- simple_critval(theta0, theta1, r, n, m, alpha)
   if (theta1 ^ r > theta0 ^ r)
-    pchisq(q = (theta1 / theta0) ^ r * c, df = 2 * n * m / r)
+    pchisq(q = theta1 ^ r / theta0 ^ r * c, df = 2 * n * m / r)
   else
-    1 - pchisq(q = (theta1 / theta0) ^ r * c, df = 2 * n * m / r)
+    1 - pchisq(q = theta1 ^ r / theta0 ^ r * c, df = 2 * n * m / r)
 }
