@@ -43,7 +43,7 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 
       }, error = function(e) NULL)
     )
     
-    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] < solution$x[2]) {
+    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] > 0 && solution$x[1] < solution$x[2]) {
       found_solution <- TRUE
       break
     }

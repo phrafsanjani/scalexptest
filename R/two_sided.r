@@ -28,7 +28,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
       }, error = function(e) NULL)
     )
     
-    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] < solution$x[2]) {
+    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] > 0 && solution$x[1] < solution$x[2]) {
       found_solution <- TRUE
       break
     }
