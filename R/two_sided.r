@@ -7,7 +7,7 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
 
   nu <- 2 * n * m / r
 
-  equations <- function(vars, nu, theta0, r, alpha) {
+  equations <- function(vars, nu, alpha) {
     c1 <- vars[1]
     c2 <- vars[2]
 
@@ -17,27 +17,12 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
     return(c(eq1, eq2))
   }
 
-  found_solution <- FALSE
-
-  for (i in seq_len(max_iterations)) {
-    b <- qchisq(1 - alpha + pchisq(a, nu), df = nu)
-    
-    solution <- suppressWarnings(
-      tryCatch({
-        pracma::fsolve(equations, c(a, b), nu = nu, theta0 = theta0, r = r, alpha = alpha)
-      }, error = function(e) NULL)
-    )
-    
-    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] > 0 && solution$x[1] < solution$x[2]) {
-      found_solution <- TRUE
-      break
-    }
-    
-    a <- a + eps
-  }
-
-  if (!found_solution)
-    stop("No solution found after ", max_iterations, " iterations. Consider adjusting 'eps' or 'max_iterations'.")
+  solution <- nleqslv::nleqslv(
+    x  = c(qchisq(alpha / 2, df = nu), qchisq(1 - alpha/2, df = nu)),
+    fn = equations,
+    nu = nu,
+    alpha = alpha
+  )
 
   return(c(solution$x[1], solution$x[2]))
 }

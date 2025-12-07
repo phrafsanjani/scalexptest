@@ -22,50 +22,59 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
 
   nu <- 2 * n * m / r
 
-  equations <- function(vars, nu, theta1, theta2, r, alpha) {
-    c1 <- vars[1]
-    c2 <- vars[2]
+  a_seq <- seq(1e-5, qchisq(1 - alpha - 1e-5, df = nu), length.out = 1000)
 
-    if (r > 0) {
-      eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
-      eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha)
-    } else {
+  solution_found <- FALSE
+
+  for (a in a_seq) {
+    b <- qchisq(pchisq(a, df = nu) + alpha, df = nu)
+    equations <- function(vars, nu, theta1, theta2, r, alpha) {
+      c1 <- vars[1]
+      c2 <- vars[2]
+
       eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - alpha
       eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - alpha
+
+      return(c(eq1, eq2))
     }
 
-    return(c(eq1, eq2))
-  }
-
-  eps <- 0.01
-  a <- 0
-  max_iterations <- 5000
-  found_solution <- FALSE
-
-  for (i in seq_len(max_iterations)) {
-    if (r > 0)
-      b <- qchisq(1 - alpha + pchisq(a, nu), nu)
-    else
-      b <- qchisq(alpha + pchisq(a, nu), nu)
-    
-    solution <- suppressWarnings(
-      tryCatch({
-        pracma::fsolve(equations, c(a, b), nu = nu, theta1 = theta1, theta2 = theta2, r = r, alpha = alpha)
-      }, error = function(e) NULL)
+    solution <- nleqslv::nleqslv(
+      x  = c(a, b),
+      fn = equations,
+      nu = nu,
+      theta1 = theta1,
+      theta2 = theta2,
+      r = r,
+      alpha = alpha
     )
-    
-    if (!is.null(solution) && all(is.finite(solution$x))) {
-      found_solution <- TRUE
+
+    c1 <- solution$x[1]
+    c2 <- solution$x[2]
+
+    if (!is.null(solution) && solution$termcd %in% c(1, 2) && c1 < c2 && pchisq(c2, nu) - pchisq(c1, nu) - alpha >= 0 && pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - alpha >= 0) {
+      solution_found <- TRUE
       break
     }
-    
-    a <- a + eps
   }
 
-  if (!found_solution)
-    stop("No solution found after ", max_iterations, " iterations. Consider adjusting 'eps' or 'max_iterations'.")
+  if (!solution_found) {
+    a <- qchisq(1 - alpha - 1e-5, df = nu)
+    b <- qchisq(theta2 ^ r / theta1 ^ r * pchisq(a, df = nu) + alpha, df = nu) * theta1 ^ r / theta2 ^ r
+    solution <- nleqslv::nleqslv(
+      x  = c(a, b),
+      fn = equations,
+      nu = nu,
+      theta1 = theta1,
+      theta2 = theta2,
+      r = r,
+      alpha = alpha
+    )
 
-  return(c(solution$x[1], solution$x[2]))
+    c1 <- solution$x[1]
+    c2 <- solution$x[2]
+  }
+
+  return(c(c1, c2))
 }
 
 #' Rejection Region for Interval Hypothesis Tests

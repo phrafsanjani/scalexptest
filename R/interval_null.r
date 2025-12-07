@@ -12,7 +12,7 @@
 #' @examples
 #' interval_null_critvals(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
-interval_null_critvals <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
@@ -22,39 +22,59 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 
 
   nu <- 2 * n * m / r
 
-  equations <- function(vars, nu, theta1, theta2, r, alpha) {
-    c1 <- vars[1]
-    c2 <- vars[2]
+  a_seq <- seq(1e-5, qchisq(alpha - 1e-5, df = nu), length.out = 1000)
 
-    eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
-    eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha)
+  solution_found <- FALSE
 
-    return(c(eq1, eq2))
-  }
+  for (a in a_seq) {
+    b <- qchisq(pchisq(a, df = nu) + 1 - alpha, df = nu)
+    equations <- function(vars, nu, theta1, theta2, r, alpha) {
+      c1 <- vars[1]
+      c2 <- vars[2]
 
-  found_solution <- FALSE
+      eq1 <- pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha)
+      eq2 <- pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha)
 
-  for (i in seq_len(max_iterations)) {
-    b <- qchisq(1 - alpha + pchisq(a, nu), nu)
-    
-    solution <- suppressWarnings(
-      tryCatch({
-        pracma::fsolve(equations, c(a, b), nu = nu, theta1 = theta1, theta2 = theta2, r = r, alpha = alpha)
-      }, error = function(e) NULL)
+      return(c(eq1, eq2))
+    }
+
+    solution <- nleqslv::nleqslv(
+      x  = c(a, b),
+      fn = equations,
+      nu = nu,
+      theta1 = theta1,
+      theta2 = theta2,
+      r = r,
+      alpha = alpha
     )
-    
-    if (!is.null(solution) && all(is.finite(solution$x)) && solution$x[1] > 0 && solution$x[1] < solution$x[2]) {
-      found_solution <- TRUE
+
+    c1 <- solution$x[1]
+    c2 <- solution$x[2]
+
+    if (!is.null(solution) && solution$termcd %in% c(1, 2) && c1 < c2 && pchisq(c2, nu) - pchisq(c1, nu) - (1 - alpha) >= 0 && pchisq(theta2 ^ r / theta1 ^ r * c2, nu) - pchisq(theta2 ^ r / theta1 ^ r * c1, nu) - (1 - alpha) >= 0) {
+      solution_found <- TRUE
       break
     }
-    
-    a <- a + eps
   }
 
-  if (!found_solution)
-    stop("No solution found after ", max_iterations, " iterations. Consider adjusting 'eps' or 'max_iterations'.")
+  if (!solution_found) {
+    a <- qchisq(alpha - 1e-5, df = nu)
+    b <- qchisq(theta2 ^ r / theta1 ^ r * pchisq(a, df = nu) + 1 - alpha, df = nu) * theta1 ^ r / theta2 ^ r
+    solution <- nleqslv::nleqslv(
+      x  = c(a, b),
+      fn = equations,
+      nu = nu,
+      theta1 = theta1,
+      theta2 = theta2,
+      r = r,
+      alpha = alpha
+    )
 
-  return(c(solution$x[1], solution$x[2]))
+    c1 <- solution$x[1]
+    c2 <- solution$x[2]
+  }
+
+  return(c(c1, c2))
 }
 
 #' Rejection Region for Interval Hypothesis Tests
@@ -71,8 +91,8 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 
 #' @examples
 #' interval_null_rr(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
-interval_null_rr <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
-  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha, a, eps, max_iterations)
+interval_null_rr <- function(theta1, theta2, r, n, m, alpha) {
+  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha)
   sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
@@ -91,7 +111,7 @@ interval_null_rr <- function(theta1, theta2, r, n, m, alpha, a = 0, eps = 0.01, 
 #' @examples
 #' interval_null_beta(1.75, 2.25, 2.29, -2, 200, -1, 0.05)
 #' @export
-interval_null_beta <- function(theta1, theta2, theta, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
-  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha, a, eps, max_iterations)
+interval_null_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
+  c <- interval_null_critvals(theta1, theta2, r, n, m, alpha)
   1 - pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
 }

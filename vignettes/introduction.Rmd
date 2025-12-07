@@ -220,8 +220,8 @@ two_sided_beta(1, 5, -2, 4, -1, 0.05)
 ```
 
 ```{r}
-two_sided_rr(5, -1, 500, -1, 0.05, a = 900)
-two_sided_beta(5, 5.75, -1, 500, -1, 0.05, a = 900)
+two_sided_rr(5, -1, 500, -1, 0.05)
+two_sided_beta(5, 5.75, -1, 500, -1, 0.05)
 ```
 
 ## Interval Hypotheses
@@ -254,6 +254,6 @@ interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 ```{r}
 #interval_null_rr(2, , -2, 25, -1, 0.01)
 #interval_null_beta(1, , sqrt(2), -2, 25, -1, 0.01)
-interval_null_rr(4.9, 5.1, -1, 500, -1, 0.05, a = 900)
-interval_null_beta(4.9, 5.1, 5.5, -1, 500, -1, 0.05, a = 900)
+interval_null_rr(4.9, 5.1, -1, 500, -1, 0.05)
+interval_null_beta(4.9, 5.1, 5.5, -1, 500, -1, 0.05)
 ```
