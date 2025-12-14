@@ -1,6 +1,7 @@
 ---
 title: "Introduction to `scalexptest`"
 output: rmarkdown::html_vignette
+bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Introduction to `scalexptest`}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,10 +15,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package contains functions for the hypothesis tests proposed in our manuscript,
-*Hypothesis Testing for the Scale-Exponential Family of Distributions*.
-This vignette gives an introduction and a summary of the proposed tests,
-along with all the examples from the manuscript.
+This package contains methods for the hypothesis tests proposed in our accompanying paper,
+*A Unified Framework for Hypothesis Testing in the Scale-Exponential Family of Distributions*.
+This vignette gives an introduction and an overview of the proposed tests,
+along with all the computations of the examples from Table 2 in the paper.
 
 ```{r setup}
 library(scalexptest)
@@ -27,17 +28,20 @@ library(scalexptest)
 
 The scale-exponential family has a probability density function (pdf) of the form
 $$f_{\theta}(x) = \theta^m \exp\{\theta^r t(x)\}h(x),$$
-where $\theta > 0, r, m \in \mathbb{R}-\{0\} \text{, and } x \in I$ with $I \subset \mathbb{R}$ continuous and independent of $\theta$.
-Many well-known distributions can be expressed in this form.
+where $\theta > 0, r, m \in \mathbb{R} \setminus \{0\} \text{, and } x \in I$ with $I \subset \mathbb{R}$ continuous and independent of $\theta$ (@singh_sequence-compound_1978).
+Many well-known distributions can be expressed in this form
+(see Table 1 of the accompanying paper).
 
-For example, choosing $r = -2$, $m = -1$, $t(x) = -\frac{(x - \mu)^2}{2}$ and $h(x) = \frac{1}{\sqrt{2\pi}} I_{(-\infty, +\infty)}(x)$ gives the normal distribution density with mean $\mu$ and variance $\theta^2$.
+For instance, choosing $r = -2$, $m = -1$, $t(x) = -\frac{(x - \mu)^2}{2}$ and $h(x) = \frac{1}{\sqrt{2\pi}} I_{(-\infty, +\infty)}(x)$ gives the normal distribution density with mean $\mu$ and variance $\theta^2$.
 
-The computed rejection regions are for the test statistic $2(-\sum_{i}^{n}t(X_i))\theta_0^r$,
-where $X_i$'s are the observed data from the sample.
+The computed rejection regions are for the test statistic $Q_i = 2(-\sum_{j = 1}^{n}t(X_j))\theta_i^r$,
+where $X_j$'s are the observed data from the sample,
+and $\theta_i$ is chosen to be a boundary point between null and alternative hypotheses.
 
-In the following sections, we summarize the proposed hypothesis tests for the scale-exponential family.
+In the following sections,
+we give an overview of the proposed hypothesis tests for the scale-exponential family.
 By choosing the known parameters properly,
-we derive rejection regions and power at certain points for some of these famous distributions.
+we derive rejection regions and statistical power for examples of Table 2 in the paper.
 
 ## Simple Hypotheses
 
@@ -45,43 +49,48 @@ The first problem is testing a simple null hypothesis against a simple alternati
 
 $$
 \begin{cases}
-    H_0: \theta = \theta_0, \\
-    H_1: \theta = \theta_1.
+    H_0: \theta = \theta_0 \\
+    H_1: \theta = \theta_1
 \end{cases}
 $$
 
-The proposed test is a most powerful (MP) test,
-which is derived using the Neyman-Pearson lemma.
-The rejection region for this test can be obtained by calling `simple_rr(theta0, theta1, r, n, m, alpha)`,
+The most powerful (MP) level $\alpha$ test function for this problem is given by
+$$
+\phi(\symbfit{X}) = \mathbb{I}(\theta_1^r > \theta_0^r)\mathbb{I}(Q_0 < c) + \mathbb{I}(\theta_1^r < \theta_0^r)\mathbb{I}(Q_0 > c),
+$$
+which is derived using the Neyman-Pearson lemma in Theorem 1 of the paper.
+The critical value $c$ is computed by calling `simple_critval(theta0, theta1, r, n, m, alpha)`,
+and the corresponding rejection region by calling `simple_rr(theta0, theta1, r, n, m, alpha)`,
 where `theta0`, `theta1`, `r` and `m` are
 the parameters $\theta_0$, $\theta_1$, $r$ and $m$ respectively,
-as defined in the scale-exponential family.
+as defined in the scale-exponential family,
 `n` is the sample size $n$ of the observed data,
 and $\alpha$ is the significance level chosen for the problem at hand.
 
-The power of this test at the point $\theta = \theta_1$ is computed by calling `simple_beta(theta0, theta1, r, n, m, alpha)`.
+The power of this test at $\theta = \theta_1$ is computed by calling `simple_beta(theta0, theta1, r, n, m, alpha)`.
 
 ### Examples
 
 We saw previously that choosing $r = -2$ and $m = -1$ gives the normal distribution.
-Therefore, to test $\theta = 2$ vs $\theta = 4$ with an observed data sample size of $n = 20$
-and significance level $\alpha = 0.01$, we call:
+Therefore, to test $\theta = 2$ versus $\theta = 4$ with an observed sample size of $n = 20$
+at significance level $\alpha = 0.01$ (@roussas_course_1997[Ch. 13, Ex. 4, p. 336]), we call:
 
 ```{r}
 simple_rr(2, 4, -2, 20, -1, 0.01)
 ```
 
-It can be shown that the exponential distribution with rate parameter $\frac{1}{\theta}$ has a scale-exponential form with $r = -1$ and $m = -1$.
-
-Thus, the rejection region for the MP test of $H_0: \theta = \frac{1}{8}$ vs $H_1: \theta = \frac{1}{10}$
-from an exponential model of size $n = 9$ with significance level $\alpha = 0.05$ is:
+The exponential distribution with pdf $f(x | \frac{1}{\theta}) = \frac{1}{\theta}e^{-\frac{x}{\theta}}$ has a scale-exponential form with $r = -1$ and $m = -1$ (see Table 1 in the paper).
+Thus, the rejection region for the MP test of $H_0: \theta = \frac{1}{8}$ versus $H_1: \theta = \frac{1}{10}$
+from an exponential distribution of size $n = 9$ at significance level $\alpha = 0.05$ (@chihara_mathematical_2018[Ex. 8.20, p. 272]) is:
 
 ```{r}
 simple_rr(1 / 8, 1 / 10, -1, 9, -1, 0.05)
 ```
 
-The beta distribution $Beta(\theta, 1)$ has a scale-exponential form with $r = 1$ and $m = 1$.
-Below are two examples from this distribution with only one data point and significance level $\alpha = 0.05$:
+From Table 1 of the accompanying paper,
+the beta distribution $Beta(\theta, 1)$ has a scale-exponential form with $r = 1$ and $m = 1$.
+Below is another example from @wackerly_mathematical_2008[Ex. 10.22, p. 543] and two more from @roussas_introduction_2003[Ch. 11, Ex. 6, pp. 305-306],
+all from the same beta distribution with only one data point at significance level $\alpha = 0.05$:
 
 ```{r}
 simple_rr(2, 1, 1, 1, 1, 0.05)
@@ -101,34 +110,34 @@ simple_beta(4, 2, 1, 1, 1, 0.05)
 
 ## One-Sided Hypotheses
 
-The previous test can be utilized in testing one-sided hypotheses.
+The previous test can be utilized in testing one-sided hypotheses (see Thorem 2 in the paper).
 For instance, consider the following problem:
 
 $$
 \begin{cases}
-    H_0: \theta = \theta_0, \\
-    H_1: \theta > \theta_0.
+    H_0: \theta = \theta_0 \\
+    H_1: \theta > \theta_0
 \end{cases}
 $$
 
-There exists a uniformly most powerful (UMP) level-$\alpha$ test for this problem whose rejection region is derived by substituting any arbitrary value of `theta1` greater than `theta0` in `simple_rr(theta0, theta1, r, n, m, alpha)`.
+There exists a uniformly most powerful (UMP) level $\alpha$ test for this problem whose rejection region is derived by substituting any arbitrary positive value of `theta1` greater than `theta0` in `simple_rr(theta0, theta1, r, n, m, alpha)`.
 Similarly, choosing any arbitrary positive value of `theta1` less than `theta0` gives the rejection region for this problem:
 
 $$
 \begin{cases}
-    H_0: \theta = \theta_0, \\
-    H_1: \theta < \theta_0.
+    H_0: \theta = \theta_0 \\
+    H_1: \theta < \theta_0
 \end{cases}
 $$
 
 To calculate the value of power at $\theta = \theta_1$,
-we call `simple_rr(theta0, theta1, r, n, m, alpha)` with $\theta_1$ as the value of `theta1`.
+we call `simple_beta(theta0, theta1, r, n, m, alpha)` with `theta1` as the value of $\theta_1$.
 
 The UMP tests for $H_0: \theta \geq \theta_0$ vs $H_1: \theta < \theta_0$ and $H_0: \theta \leq \theta_0$ vs $H_1: \theta > \theta_0$ are obtained analogously.
 
 ### Examples
 
-To test $H_0: \theta = 1.5$ vs $H_1: \theta > 1.5$ in a sample of size $n = 10$ from an exponential model with significance level $\alpha = 0.05$,
+To test $H_0: \theta = 1.5$ versus $H_1: \theta > 1.5$ in a sample of size $n = 10$ from an exponential distribution at significance level $\alpha = 0.05$ (@dudewicz_modern_1988[Ex. 9.3.43, p. 459-460]),
 we choose $\theta_1 = 3$, an arbitrary number greater than $1.5$:
 
 ```{r}
@@ -141,16 +150,17 @@ The corresponding power at $\theta = 3$ is:
 simple_beta(1.5, 3, -1, 10, -1, 0.05)
 ```
 
-Here is a similar example to the previous one, but for testing $H_0: \theta = 10$ vs $H_1: \theta > 10$ with $n = 31$ and $\theta_1 = 14$:
+Here is a similar example to the previous one,
+but for testing $H_0: \theta = 10$ versus $H_1: \theta > 10$ with $n = 31$ and $\theta_1 = 14$ (@dudewicz_modern_1988[Ex. 9.3.58, pp. 463-464]):
 
 ```{r}
 simple_rr(10, 14, -1, 31, -1, 0.05)
 simple_beta(10, 14, -1, 31, -1, 0.05)
 ```
 
-To test $H_0: \theta \geq 2$ vs $H_1: \theta < 2$ in a sample of size $n = 40$ from the normal model with significance level $\alpha = 0.025$,
+To test $H_0: \theta \geq 2$ versus $H_1: \theta < 2$ in a sample of size $n = 40$ from the normal distribution at significance level $\alpha = 0.025$ (@roussas_introduction_2003[Appl. 4, Discussion, p. 319-320]),
 we choose $\theta_1 = 1.25$, an arbitrary number less than $2$,
-since we also want to calculate the value of the power of this test at $\theta = 1.25$:
+since we also want to calculate the value of power of this test at $\theta = 1.25$:
 
 ```{r}
 simple_rr(2, 1.25, -2, 40, -1, 0.025)
@@ -158,7 +168,7 @@ simple_beta(2, 1.25, -2, 40, -1, 0.025)
 ```
 
 Here is a similar example from the normal distribution,
-but for testing $H_0: \theta \leq 4$ vs $H_1: \theta > 4$ with $n = 25$, $\alpha = 0.05$, and $\theta_1 = 12$:
+but for testing $H_0: \theta \leq 4$ versus $H_1: \theta > 4$ with $n = 25$, $\alpha = 0.05$, and $\theta_1 = 12$ (@roussas_course_1997[Ch. 13, Ex. 9, p. 346]):
 
 ```{r}
 simple_rr(4, 12, -2, 25, -1, 0.05)
@@ -166,7 +176,8 @@ simple_beta(2, 12, -2, 25, -1, 0.05)
 ```
 
 We finish this section with yet another example from the normal distribution,
-but for testing $H_0: \theta = \sqrt{3}$ vs $H_1: \theta > \sqrt{3}$ with $n = 15$, $\alpha = 0.05$, and $\theta_1 = 2$:
+but for testing $H_0: \theta = \sqrt{3}$ versus $H_1: \theta > \sqrt{3}$,
+with $n = 15$, $\alpha = 0.05$, and $\theta_1 = 2$ (@hogg_introduction_2019[Ex. 8.2.2, p. 480]):
 
 ```{r}
 simple_rr(sqrt(3), 2, -2, 15, -1, 0.05)
@@ -175,27 +186,28 @@ simple_beta(sqrt(3), 2, -2, 15, -1, 0.05)
 
 ## Two-Sided Hypotheses
 
-The next problem is testing a simple null hypothesis vs a two-sided composite alternative:
+The next problem is testing a simple null hypothesis versus a two-sided composite alternative:
 
 $$
 \begin{cases}
-    H_0: \theta = \theta_0 \\
+    H_0: \theta = \theta_0\\
     H_1: \theta \neq \theta_0
 \end{cases}
 $$
-
-There is a uniformly most powerful unbiased (UMPU) level-$\alpha$ test for this problem whose rejection region is computed using
-`two_sided_rr(theta0, r, n, m, alpha, initial_guess)` and its power at $\theta = \theta_1$
-using `two_sided_beta(theta0, theta1 r, n, m, alpha, initial_guess)`.
-
-The variables `theta0`, `r`, `n`, `m` and `alpha` are the same as before,
-and `initial_guess` is a random vector of length two.
-We note, however, that not every random vector yields an answer,
-and that a series of trials and errors may be needed.
+From Theorem 4 in the paper,
+the uniformly most powerful unbiased (UMPU) level $\alpha$ test function for this problem is given by
+$$
+    \phi(\symbfit{X}) = \mathbb{I}( Q_0 < c_1 \mbox{ or } Q_0 > c_2 ),
+$$
+where $c_1$ and $c_2$ are computed as a vector of length two by calling `two_sided_critvals(theta0, r, n, m, alpha)`,
+and the rejection region is obtained by calling `two_sided_rr(theta0, r, n, m, alpha)`,
+where the variables `theta0`, `r`, `n`, `m` and `alpha` are the same as before.
+The power of this test at $\theta$ is computed by calling `two_sided_beta(theta0, theta, r, n, m, alpha)`,
+where `theta` is the value of $\theta$.
 
 ### Examples
 
-Below, the rejection region for the UMPU test of $H_0: \theta = 1$ vs $H_1: \theta \neq 1$ in a sample of one data point from the exponential distribution with significance level $\alpha = 0.05$ is computed:
+Below, the rejection region for the UMPU test of $H_0: \theta = 1$ versus $H_1: \theta \neq 1$ in a sample of one data point from the exponential distribution at significance level $\alpha = 0.05$ (@keener_theoretical_2010[Ex. 12.29, p. 244]) is computed:
 
 ```{r}
 two_sided_rr(1, -1, 1, -1, 0.05)
@@ -207,7 +219,7 @@ The power of this test at $\theta = 3$ is:
 two_sided_beta(1, 3, -1, 1, -1, 0.05)
 ```
 
-The rejection region for the UMPU test of $H_0: \theta = 1$ vs $H_1: \theta \neq 1$ in a sample of size $n = 4$ from the normal model with significance level $\alpha = 0.05$ is:
+The rejection region for the UMPU test of $H_0: \theta = 1$ versus $H_1: \theta \neq 1$ in a sample of size $n = 4$ from the normal distribution at significance level $\alpha = 0.05$ (@keener_theoretical_2010[Ch. 12, Probl. 42, pp. 252, 506]) is:
 
 ```{r}
 two_sided_rr(1, -2, 4, -1, 0.05)
@@ -219,6 +231,8 @@ The power of this test at $\theta = 5$ is:
 two_sided_beta(1, 5, -2, 4, -1, 0.05)
 ```
 
+Computed below is the rejection region and the power of the UMPU test at $\theta = 5.75$ for testing $H_0: \theta = 5$ versus $H_1: \theta \neq 5$ in a sample of size $n = 500$ from the exponential distribution at significance level $\alpha = 0.05$ (@mittelhammer_mathematical_2013[Ex. 9.22, pp. 576-578]):
+
 ```{r}
 two_sided_rr(5, -1, 500, -1, 0.05)
 two_sided_beta(5, 5.75, -1, 500, -1, 0.05)
@@ -226,34 +240,69 @@ two_sided_beta(5, 5.75, -1, 500, -1, 0.05)
 
 ## Interval Hypotheses
 
-Consider the following problem:
+Consider testing against an alternative hypothesis:
 
 $$
 \begin{cases}
-    H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2 \\
+    H_0 : \theta \leq \theta_1 \mbox{ or } \theta \geq \theta_2 \\
     H_1 : \theta_1 < \theta < \theta_2
 \end{cases}
 $$
 
-There is a UMP level-$\alpha$ test for this problem whose rejection region is computed using
-`interval_rr(theta0, r, n, m, alpha, initial_guess)` and its power at $\theta = \theta_1$
-using `interval_beta(theta0, theta1 r, n, m, alpha, initial_guess)`.
+As demonstrated in Theorem 3 of the paper,
+the test function
+$$
+\phi(\symbfit{X}) = \mathbb{I}( c_1 < Q_1 < c_2)
+$$
+is a UMP level $\alpha$ test for this problem,
+where the vector of critical values $c_1$ and $c_2$ are computed by calling `interval_alt_critvals(theta1, theta2, r, n, m, alpha)`.
+The variables `theta0`, `theta1`, `r` and `m` are
+the parameters $\theta_1$, $\theta_2$, $r$ and $m$ respectively,
+as defined in the scale-exponential family,
+`n` is the sample size $n$ of the observed data,
+and $\alpha$ is the significance level chosen for the problem at hand.
 
-The variables `theta0`, `r`, `n`, `m`, `alpha` and `initial_guess` are the same as the previous section.
-Again, we note that not every random vector leads to the result and a series of trials and errors may be needed.
+Calling `interval_alt_rr(theta1, theta2, r, n, m, alpha)` outputs the corresponding rejection region,
+and `interval_alt_beta(theta1, theta2, theta, r, n, m, alpha)` the power of the test at `theta`.
 
 ### Example
+
+We compute the rejection region and power of the UMP test at $\theta = \sqrt{2}$ for testing $H_0: \theta \leq 1 \mbox{ or } \theta \geq \sqrt{3}$ versus $H_1: 1 < \theta < \sqrt{3}$ in a sample of size $n = 25$ from the normal distribution at significance level $\alpha = 0.01$ (@roussas_course_1997[Ch. 13, Ex. 9, p. 347]):
 
 ```{r}
 interval_alt_rr(1, sqrt(3), -2, 25, -1, 0.01)
 interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 ```
 
+Now consider the inverse problem of testing an interval null hypothesis:
+
+$$
+\begin{cases}
+    H_0 : \theta_1 \leq \theta \leq \theta_2  \\
+    H_1 : \theta < \theta_1 \mbox{ or } \theta > \theta_2
+\end{cases}
+$$
+
+From Theorem 5 of the paper,
+the test function
+$$
+\phi(\symbfit{X}) = \mathbb{I}(Q_1 < c_1 \mbox{ or } c_2 > Q_1)
+$$
+is a UMPU level $\alpha$ test for this problem,
+where the vector of critical values $c_1$ and $c_2$ are computed by calling `interval_null_critvals(theta1, theta2, r, n, m, alpha)`.
+The variables `theta1`, `theta2`, `r` and `m` are
+the parameters $\theta_1$, $\theta_2$, $r$ and $m$ respectively,
+as defined in the scale-exponential family,
+`n` is the sample size $n$ of the observed data,
+and `alpha` is the significance level chosen for the problem.
+
+Calling `interval_null_rr(theta1, theta2, r, n, m, alpha)` outputs the corresponding rejection region, and `interval_null_beta(theta1, theta2, theta, r, n, m, alpha)` the power of the test at `theta`.
+
 ### Example
 
+We compute the rejection region and the power of the UMPU test at $\theta = 5.5$ for testing $H_0: 4.9 \leq \theta \leq 5.1$ versus $H_1: \theta < 4.9 \mbox{ or } \theta > 5.1$ in a sample of size $n = 500$ from the normal distribution at significance level $\alpha = 0.05$ (@mittelhammer_mathematical_2013[Ex. 9.24, pp. 580-581]):
+
 ```{r}
-#interval_null_rr(2, , -2, 25, -1, 0.01)
-#interval_null_beta(1, , sqrt(2), -2, 25, -1, 0.01)
 interval_null_rr(4.9, 5.1, -1, 500, -1, 0.05)
 interval_null_beta(4.9, 5.1, 5.5, -1, 500, -1, 0.05)
 ```

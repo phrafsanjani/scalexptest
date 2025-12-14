@@ -1,4 +1,4 @@
-two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+two_sided_critvals <- function(theta0, r, n, m, alpha) {
   if (theta0 <= 0) stop("Error: Parameter 'theta0' must be positive")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
   if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
@@ -40,11 +40,11 @@ two_sided_critvals <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_it
 #' @examples
 #' two_sided_rr(1, -1, 1, -1, 0.05)
 #' two_sided_rr(1, -2, 4, -1, 0.05)
-#' two_sided_rr(5, -1, 500, -1, 0.05, a = 2000, eps = 1)
+#' two_sided_rr(5, -1, 500, -1, 0.05)
 #' @export
-two_sided_rr <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
-  c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
-  sprintf("(%f, %4f] U [%4f, %f)", -Inf, c[1], c[2], Inf)
+two_sided_rr <- function(theta0, r, n, m, alpha) {
+  c <- two_sided_critvals(theta0, r, n, m, alpha)
+  sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
 #' Power for Two-Sided Hypothesis Tests
@@ -61,10 +61,10 @@ two_sided_rr <- function(theta0, r, n, m, alpha, a = 0, eps = 0.01, max_iteratio
 #' @examples
 #' two_sided_beta(1, -1, 1, -1, 0.05)
 #' two_sided_beta(1, -2, 4, -1, 0.05)
-#' two_sided_beta(5, 5.75, -1, 500, -1, 0.05, a = 2000, eps = 1)
+#' two_sided_beta(5, 5.75, -1, 500, -1, 0.05)
 #' @export
-two_sided_beta <- function(theta0, theta, r, n, m, alpha, a = 0, eps = 0.01, max_iterations = 5000) {
+two_sided_beta <- function(theta0, theta, r, n, m, alpha) {
   if (theta <= 0) stop("Error: Parameter 'theta' must be positive")
-  c <- two_sided_critvals(theta0, r, n, m, alpha, a, eps, max_iterations)
+  c <- two_sided_critvals(theta0, r, n, m, alpha)
   1 - pchisq(theta ^ r / theta0 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta0 ^ r * c[1], df = 2 * n * m / r)
 }
