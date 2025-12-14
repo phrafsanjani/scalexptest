@@ -1,14 +1,15 @@
-#' Rejection Region for Interval Hypothesis Tests
+#' Critical Values for Intervall-alternative UMP Test
 #' 
-#' `interval_alt_critvals()` computes the critival values for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' `interval_alt_critvals` computes the critical values for the UMP test of
+#' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂.
 #' 
-#' @param theta1 A positive numeric value
-#' @param theta2 A positive numeric value
-#' @param r A non-zero numeric value
-#' @param n An integer represeting the sample size
-#' @param m A non-zero numeric value
+#' @param theta1 A positive numeric value representing θ₁
+#' @param theta2 A positive numeric value representing θ₂
+#' @param r A non-zero numeric parameter of the scale-exponential family
+#' @param n An integer representing the sample size
+#' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric vector
+#' @returns A numeric length-two vector of critical values
 #' @examples
 #' interval_alt_critvals(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
@@ -77,17 +78,18 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
   return(c(c1, c2))
 }
 
-#' Rejection Region for Interval Hypothesis Tests
+#' Rejection Region for Intervall-alternative UMP Test
 #' 
-#' `interval_alt_rr()` computes the rejection region for $H_0 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$ vs $H_1 : \theta_1 < \theta < \theta_2$.
+#' `interval_alt_rr()` computes the rejection region for the UMP test of
+#' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂.
 #' 
-#' @param theta1 A positive numeric value
-#' @param theta2 A positive numeric value
-#' @param r A non-zero numeric value
-#' @param n An integer represeting the sample size
-#' @param m A non-zero numeric value
+#' @param theta1 A positive numeric value representing θ₁
+#' @param theta2 A positive numeric value representing θ₂
+#' @param r A non-zero numeric parameter of the scale-exponential family
+#' @param n An integer representing the sample size
+#' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A character vector
+#' @returns A character string describing the rejection region in interval notation
 #' @examples
 #' interval_alt_rr(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
@@ -99,18 +101,19 @@ interval_alt_rr <- function(theta1, theta2, r, n, m, alpha) {
     sprintf("(%4f, %4f)", c[1], c[2])
 }
 
-#' Power for Interval Hypothesis Tests
+#' Power for Intervall-alternative UMP Test
 #' 
-#' `interval_alt_beta()` computes statistical power at $\theta$ for interval hypothesis tests.
+#' `interval_alt_beta()` computes statistical power for the UMP test of
+#' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂ at `theta`.
 #' 
-#' @param theta1 A positive numeric value
-#' @param theta2 A positive numeric value
+#' @param theta1 A positive numeric value representing θ₁
+#' @param theta2 A positive numeric value representing θ₂
 #' @param theta A positive numeric value
-#' @param r A non-zero numeric value
-#' @param n An integer represeting the sample size
-#' @param m A non-zero numeric value
+#' @param r A non-zero numeric parameter of the scale-exponential family
+#' @param n An integer representing the sample size
+#' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric value between 0 and 1
+#' @returns A numeric value between 0 and 1 representing power at `theta`
 #' @examples
 #' interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 #' @export

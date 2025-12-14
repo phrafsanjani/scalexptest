@@ -2,29 +2,30 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_critvals}
 \alias{interval_null_critvals}
-\title{Rejection Region for Interval Hypothesis Tests}
+\title{Critical Values for Intervall-null UMPU Test}
 \usage{
 interval_null_critvals(theta1, theta2, r, n, m, alpha)
 }
 \arguments{
-\item{theta1}{A positive numeric value}
+\item{theta1}{A positive numeric value representing θ₁}
 
-\item{theta2}{A positive numeric value}
+\item{theta2}{A positive numeric value representing θ₂}
 
-\item{r}{A non-zero numeric value}
+\item{r}{A non-zero numeric parameter of the scale-exponential family}
 
-\item{n}{An integer represeting the sample size}
+\item{n}{An integer representing the sample size}
 
-\item{m}{A non-zero numeric value}
+\item{m}{A non-zero numeric parameter of the scale-exponential family}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric vector
+A numeric length-two vector of critical values
 }
 \description{
-\code{interval_null_critvals()} computes the critival values for $H_0 : \theta_1 < \theta < \theta_2$ vs $H_1 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$.
+\code{interval_null_critvals} computes the critical values for the UMPU test of
+H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂.
 }
 \examples{
-interval_null_critvals(1, sqrt(3), -2, 25, -1, 0.01)
+interval_null_critvals(1.75, 2.25, -2, 200, -1, 0.05)
 }

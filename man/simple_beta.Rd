@@ -2,29 +2,31 @@
 % Please edit documentation in R/simple.r
 \name{simple_beta}
 \alias{simple_beta}
-\title{Power for Simple and One-Sided Hypotheses}
+\title{Power for Simple MP and One-Sided UMP Tests}
 \usage{
 simple_beta(theta0, theta1, r, n, m, alpha)
 }
 \arguments{
-\item{theta0}{A positive numeric value}
+\item{theta0}{A positive numeric value representing θ₀}
 
-\item{theta1}{A positive numeric value}
+\item{theta1}{A positive numeric value representing θ₁}
 
-\item{r}{A non-zero numeric value}
+\item{r}{A non-zero numeric parameter of the scale-exponential family}
 
-\item{n}{An integer represeting the sample size}
+\item{n}{An integer representing the sample size}
 
-\item{m}{A non-zero numeric value}
+\item{m}{A non-zero numeric parameter of the scale-exponential family}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1
+A numeric value between 0 and 1 representing power at θ = θ₁
 }
 \description{
-\code{simple_beta()} computes statistical power at theta1 for simple vs simple,
-simple vs one-sided and one-sided vs one-sided tests.
+\code{simple_beta} computes statistical power for the MP test of
+H₀: θ = θ₀ vs H₁: θ = θ₁, or UMP tests of
+H₀: θ ≤ θ₀ vs H₁: θ > θ₀ and H₀: θ ≥ θ₀ vs H₁: θ < θ₀,
+at θ = θ₁.
 }
 \examples{
 simple_beta(2, 4, -2, 20, -1, 0.01)

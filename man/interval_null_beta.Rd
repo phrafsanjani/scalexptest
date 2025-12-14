@@ -2,31 +2,32 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_beta}
 \alias{interval_null_beta}
-\title{Power for Interval Hypothesis Tests}
+\title{Power for for Intervall-null UMPU Test}
 \usage{
 interval_null_beta(theta1, theta2, theta, r, n, m, alpha)
 }
 \arguments{
-\item{theta1}{A positive numeric value}
+\item{theta1}{A positive numeric value representing θ₁}
 
-\item{theta2}{A positive numeric value}
+\item{theta2}{A positive numeric value representing θ₂}
 
 \item{theta}{A positive numeric value}
 
-\item{r}{A non-zero numeric value}
+\item{r}{A non-zero numeric parameter of the scale-exponential family}
 
-\item{n}{An integer represeting the sample size}
+\item{n}{An integer representing the sample size}
 
-\item{m}{A non-zero numeric value}
+\item{m}{A non-zero numeric parameter of the scale-exponential family}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1
+A numeric value between 0 and 1 representing power at \code{theta}
 }
 \description{
-\code{interval_null_beta()} computes statistical power at $\theta$ for interval hypothesis tests.
+\code{interval_null_beta} computes statistical power for the UMPU test of
+H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂ at \code{theta}.
 }
 \examples{
-interval_null_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
+interval_null_beta(1.75, 2.25, 2.29, -2, 200, -1, 0.05)
 }

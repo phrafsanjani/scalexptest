@@ -2,29 +2,30 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_rr}
 \alias{interval_null_rr}
-\title{Rejection Region for Interval Hypothesis Tests}
+\title{Rejection Region for Intervall-null UMPU Test}
 \usage{
 interval_null_rr(theta1, theta2, r, n, m, alpha)
 }
 \arguments{
-\item{theta1}{A positive numeric value}
+\item{theta1}{A positive numeric value representing θ₁}
 
-\item{theta2}{A positive numeric value}
+\item{theta2}{A positive numeric value representing θ₂}
 
-\item{r}{A non-zero numeric value}
+\item{r}{A non-zero numeric parameter of the scale-exponential family}
 
-\item{n}{An integer represeting the sample size}
+\item{n}{An integer representing the sample size}
 
-\item{m}{A non-zero numeric value}
+\item{m}{A non-zero numeric parameter of the scale-exponential family}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A character vector
+A character string describing the rejection region in interval notation
 }
 \description{
-\code{interval_null_rr()} computes the rejection region for $H_0 : \theta_1 < \theta < \theta_2$ vs $H_1 : \theta \leq \theta_1 \text{ or } \theta \geq \theta_2$.
+\code{interval_null_rr} computes the rejection region for the UMPU test of
+H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂.
 }
 \examples{
-interval_null_rr(1, sqrt(3), -2, 25, -1, 0.01)
+interval_null_rr(1.75, 2.25, -2, 200, -1, 0.05)
 }

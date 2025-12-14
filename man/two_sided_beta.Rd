@@ -2,30 +2,32 @@
 % Please edit documentation in R/two_sided.r
 \name{two_sided_beta}
 \alias{two_sided_beta}
-\title{Power for Two-Sided Hypothesis Tests}
+\title{Power for Two-Sided UMPU Test}
 \usage{
 two_sided_beta(theta0, theta, r, n, m, alpha)
 }
 \arguments{
-\item{theta0}{A positive numeric value}
+\item{theta0}{A positive numeric value representing θ₀}
 
-\item{r}{A non-zero numeric value}
+\item{theta}{A positive numeric value}
 
-\item{n}{An integer represeting the sample size}
+\item{r}{A non-zero numeric parameter of the scale-exponential family}
 
-\item{m}{A non-zero numeric value}
+\item{n}{An integer representing the sample size}
+
+\item{m}{A non-zero numeric parameter of the scale-exponential family}
 
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
-
-\item{theta1}{A positive numeric value}
 }
 \value{
-A numeric value between 0 and 1
+A numeric value between 0 and 1 representing power at \code{theta}
 }
 \description{
-\code{two_sided_beta()} computes statistical power at $\theta = \theta_1$ for simple vs two-sided hypotheses.
+\code{two_sided_beta} computes statistical power for the UMPU test of
+H₀: θ = θ₀ vs H₁: θ ≠ θ₀ at \code{theta}.
 }
 \examples{
 two_sided_beta(1, -1, 1, -1, 0.05)
 two_sided_beta(1, -2, 4, -1, 0.05)
+two_sided_beta(5, 5.75, -1, 500, -1, 0.05)
 }
