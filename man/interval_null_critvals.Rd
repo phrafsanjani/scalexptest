@@ -2,14 +2,14 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_critvals}
 \alias{interval_null_critvals}
-\title{Critical Values for Intervall-null UMPU Test}
+\title{Critical Values for Interval-null UMPU Test}
 \usage{
 interval_null_critvals(theta1, theta2, r, n, m, alpha)
 }
 \arguments{
 \item{theta1}{A positive numeric value representing θ₁}
 
-\item{theta2}{A positive numeric value representing θ₂}
+\item{theta2}{A positive numeric value representing θ₂ (must be greater than θ₁)}
 
 \item{r}{A non-zero numeric parameter of the scale-exponential family}
 

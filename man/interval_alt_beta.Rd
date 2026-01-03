@@ -2,7 +2,7 @@
 % Please edit documentation in R/interval_alt.r
 \name{interval_alt_beta}
 \alias{interval_alt_beta}
-\title{Power for Intervall-alternative UMP Test}
+\title{Power for Interval-alternative UMP Test}
 \usage{
 interval_alt_beta(theta1, theta2, theta, r, n, m, alpha)
 }
@@ -11,7 +11,7 @@ interval_alt_beta(theta1, theta2, theta, r, n, m, alpha)
 
 \item{theta2}{A positive numeric value representing θ₂}
 
-\item{theta}{A positive numeric value}
+\item{theta}{A numeric value representing θ}
 
 \item{r}{A non-zero numeric parameter of the scale-exponential family}
 
@@ -22,11 +22,11 @@ interval_alt_beta(theta1, theta2, theta, r, n, m, alpha)
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1 representing power at \code{theta}
+A numeric value between 0 and 1 representing the power at θ
 }
 \description{
 \code{interval_alt_beta()} computes statistical power for the UMP test of
-H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂ at \code{theta}.
+H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂ at θ.
 }
 \examples{
 interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)

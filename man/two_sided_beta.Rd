@@ -9,7 +9,7 @@ two_sided_beta(theta0, theta, r, n, m, alpha)
 \arguments{
 \item{theta0}{A positive numeric value representing θ₀}
 
-\item{theta}{A positive numeric value}
+\item{theta}{A numeric value representing θ}
 
 \item{r}{A non-zero numeric parameter of the scale-exponential family}
 
@@ -20,11 +20,11 @@ two_sided_beta(theta0, theta, r, n, m, alpha)
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1 representing power at \code{theta}
+A numeric value between 0 and 1 representing the power at θ
 }
 \description{
 \code{two_sided_beta} computes statistical power for the UMPU test of
-H₀: θ = θ₀ vs H₁: θ ≠ θ₀ at \code{theta}.
+H₀: θ = θ₀ vs H₁: θ ≠ θ₀ at θ.
 }
 \examples{
 two_sided_beta(1, -1, 1, -1, 0.05)

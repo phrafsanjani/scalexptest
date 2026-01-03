@@ -1,6 +1,6 @@
 ---
 title: "Introduction to `scalexptest`"
-output: rmarkdown::html_vignette
+output: md_document
 bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Introduction to `scalexptest`}
@@ -130,7 +130,7 @@ $$
 \end{cases}
 $$
 
-To calculate the value of power at $\theta = \theta_1$,
+To calculate the power at $\theta = \theta_1$,
 we call `simple_beta(theta0, theta1, r, n, m, alpha)` with `theta1` as the value of $\theta_1$.
 
 The UMP tests for $H_0: \theta \geq \theta_0$ vs $H_1: \theta < \theta_0$ and $H_0: \theta \leq \theta_0$ vs $H_1: \theta > \theta_0$ are obtained analogously.
@@ -160,7 +160,7 @@ simple_beta(10, 14, -1, 31, -1, 0.05)
 
 To test $H_0: \theta \geq 2$ versus $H_1: \theta < 2$ in a sample of size $n = 40$ from the normal distribution at significance level $\alpha = 0.025$ (@roussas_introduction_2003[Appl. 4, Discussion, p. 319-320]),
 we choose $\theta_1 = 1.25$, an arbitrary number less than $2$,
-since we also want to calculate the value of power of this test at $\theta = 1.25$:
+since we also want to calculate the power of this test at $\theta = 1.25$:
 
 ```{r}
 simple_rr(2, 1.25, -2, 40, -1, 0.025)

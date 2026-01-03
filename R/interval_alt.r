@@ -1,21 +1,22 @@
-#' Critical Values for Intervall-alternative UMP Test
+#' Critical Values for Interval-alternative UMP Test
 #' 
 #' `interval_alt_critvals` computes the critical values for the UMP test of
 #' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂.
 #' 
 #' @param theta1 A positive numeric value representing θ₁
-#' @param theta2 A positive numeric value representing θ₂
+#' @param theta2 A positive numeric value representing θ₂ (must be greater than θ₁)
 #' @param r A non-zero numeric parameter of the scale-exponential family
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric length-two vector of critical values
+#' @return A numeric length-two vector of critical values
 #' @examples
 #' interval_alt_critvals(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
 interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
+  if (theta2 <= theta1) stop("theta2 must be greater than theta1")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
   if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
   if (m == 0) stop("Error: Parameter 'm' cannot be 0")
@@ -78,7 +79,7 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
   return(c(c1, c2))
 }
 
-#' Rejection Region for Intervall-alternative UMP Test
+#' Rejection Region for Interval-alternative UMP Test
 #' 
 #' `interval_alt_rr()` computes the rejection region for the UMP test of
 #' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂.
@@ -89,38 +90,32 @@ interval_alt_critvals <- function(theta1, theta2, r, n, m, alpha) {
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A character string describing the rejection region in interval notation
+#' @return A character string describing the rejection region in interval notation
 #' @examples
 #' interval_alt_rr(1, sqrt(3), -2, 25, -1, 0.01)
 #' @export
 interval_alt_rr <- function(theta1, theta2, r, n, m, alpha) {
   c <- interval_alt_critvals(theta1, theta2, r, n, m, alpha)
-  if (r > 0)
-    sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
-  else
-    sprintf("(%4f, %4f)", c[1], c[2])
+  sprintf("(%4f, %4f)", c[1], c[2])
 }
 
-#' Power for Intervall-alternative UMP Test
+#' Power for Interval-alternative UMP Test
 #' 
 #' `interval_alt_beta()` computes statistical power for the UMP test of
-#' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂ at `theta`.
+#' H0: θ ≤ θ₁ or θ ≥ θ₂ vs H1: θ₁ < θ < θ₂ at θ.
 #' 
 #' @param theta1 A positive numeric value representing θ₁
 #' @param theta2 A positive numeric value representing θ₂
-#' @param theta A positive numeric value
+#' @param theta A numeric value representing θ
 #' @param r A non-zero numeric parameter of the scale-exponential family
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric value between 0 and 1 representing power at `theta`
+#' @return A numeric value between 0 and 1 representing the power at θ
 #' @examples
 #' interval_alt_beta(1, sqrt(3), sqrt(2), -2, 25, -1, 0.01)
 #' @export
 interval_alt_beta <- function(theta1, theta2, theta, r, n, m, alpha) {
   c <- interval_alt_critvals(theta1, theta2, r, n, m, alpha)
-  if (r > 0)
-    1 - pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) + pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
-  else
-    pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) - pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
+  pchisq(theta ^ r / theta1 ^ r * c[2], df = 2 * n * m / r) - pchisq(theta ^ r / theta1 ^ r * c[1], df = 2 * n * m / r)
 }

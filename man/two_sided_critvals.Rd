@@ -2,7 +2,7 @@
 % Please edit documentation in R/two_sided.r
 \name{two_sided_critvals}
 \alias{two_sided_critvals}
-\title{Critical Value for Two-Sided UMPU Test}
+\title{Critical Values for Two-Sided UMPU Test}
 \usage{
 two_sided_critvals(theta0, r, n, m, alpha)
 }

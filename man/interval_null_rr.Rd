@@ -2,7 +2,7 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_rr}
 \alias{interval_null_rr}
-\title{Rejection Region for Intervall-null UMPU Test}
+\title{Rejection Region for Interval-null UMPU Test}
 \usage{
 interval_null_rr(theta1, theta2, r, n, m, alpha)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/interval_null.r
 \name{interval_null_beta}
 \alias{interval_null_beta}
-\title{Power for for Intervall-null UMPU Test}
+\title{Power for Interval-null UMPU Test}
 \usage{
 interval_null_beta(theta1, theta2, theta, r, n, m, alpha)
 }
@@ -11,7 +11,7 @@ interval_null_beta(theta1, theta2, theta, r, n, m, alpha)
 
 \item{theta2}{A positive numeric value representing θ₂}
 
-\item{theta}{A positive numeric value}
+\item{theta}{A numeric value representing θ}
 
 \item{r}{A non-zero numeric parameter of the scale-exponential family}
 
@@ -22,11 +22,11 @@ interval_null_beta(theta1, theta2, theta, r, n, m, alpha)
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1 representing power at \code{theta}
+A numeric value between 0 and 1 representing the power at θ
 }
 \description{
 \code{interval_null_beta} computes statistical power for the UMPU test of
-H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂ at \code{theta}.
+H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂ at θ.
 }
 \examples{
 interval_null_beta(1.75, 2.25, 2.29, -2, 200, -1, 0.05)

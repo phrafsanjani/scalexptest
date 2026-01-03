@@ -2,7 +2,7 @@
 % Please edit documentation in R/interval_alt.r
 \name{interval_alt_rr}
 \alias{interval_alt_rr}
-\title{Rejection Region for Intervall-alternative UMP Test}
+\title{Rejection Region for Interval-alternative UMP Test}
 \usage{
 interval_alt_rr(theta1, theta2, r, n, m, alpha)
 }

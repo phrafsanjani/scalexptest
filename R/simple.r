@@ -10,7 +10,7 @@
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric critical value
+#' @return A numeric critical value
 #' @examples
 #' simple_critval(2, 4, -2, 20, -1, 0.01)
 #' simple_critval(1 / 8, 1 / 10, -1, 9, -1, 0.05)
@@ -48,7 +48,7 @@ simple_critval <- function(theta0, theta1, r, n, m, alpha) {
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A character string describing the rejection region in interval notation
+#' @return A character string describing the rejection region in interval notation
 #' @examples
 #' simple_rr(2, 4, -2, 20, -1, 0.01)
 #' simple_rr(1 / 8, 1 / 10, -1, 9, -1, 0.05)
@@ -81,7 +81,7 @@ simple_rr <- function(theta0, theta1, r, n, m, alpha) {
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric value between 0 and 1 representing power at θ = θ₁
+#' @return A numeric value between 0 and 1 representing the power at θ = θ₁
 #' @examples
 #' simple_beta(2, 4, -2, 20, -1, 0.01)
 #' simple_beta(1 / 8, 1 / 10, -1, 9, -1, 0.05)

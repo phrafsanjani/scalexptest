@@ -1,21 +1,22 @@
-#' Critical Values for Intervall-null UMPU Test
+#' Critical Values for Interval-null UMPU Test
 #' 
 #' `interval_null_critvals` computes the critical values for the UMPU test of
 #' H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂.
 #' 
 #' @param theta1 A positive numeric value representing θ₁
-#' @param theta2 A positive numeric value representing θ₂
+#' @param theta2 A positive numeric value representing θ₂ (must be greater than θ₁)
 #' @param r A non-zero numeric parameter of the scale-exponential family
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric length-two vector of critical values
+#' @return A numeric length-two vector of critical values
 #' @examples
 #' interval_null_critvals(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
 interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
   if (theta1 <= 0) stop("Error: Parameter 'theta1' must be positive")
   if (theta2 <= 0) stop("Error: Parameter 'theta2' must be positive")
+  if (theta2 <= theta1) stop("theta2 must be greater than theta1")
   if (r == 0) stop("Error: Parameter 'r' cannot be 0")
   if (n <= 0) stop("Error: Parameter 'n' must be a positive integer")
   if (m == 0) stop("Error: Parameter 'm' cannot be 0")
@@ -78,7 +79,7 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
   return(c(c1, c2))
 }
 
-#' Rejection Region for Intervall-null UMPU Test
+#' Rejection Region for Interval-null UMPU Test
 #' 
 #' `interval_null_rr` computes the rejection region for the UMPU test of
 #' H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂.
@@ -89,7 +90,7 @@ interval_null_critvals <- function(theta1, theta2, r, n, m, alpha) {
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A character string describing the rejection region in interval notation
+#' @return A character string describing the rejection region in interval notation
 #' @examples
 #' interval_null_rr(1.75, 2.25, -2, 200, -1, 0.05)
 #' @export
@@ -98,19 +99,19 @@ interval_null_rr <- function(theta1, theta2, r, n, m, alpha) {
   sprintf("(%f, %4f) U (%4f, %f)", -Inf, c[1], c[2], Inf)
 }
 
-#' Power for for Intervall-null UMPU Test
+#' Power for Interval-null UMPU Test
 #' 
 #' `interval_null_beta` computes statistical power for the UMPU test of
-#' H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂ at `theta`.
+#' H₀: θ₁ ≤ θ ≤ θ₂ vs H₁: θ < θ₁ or θ > θ₂ at θ.
 #' 
 #' @param theta1 A positive numeric value representing θ₁
 #' @param theta2 A positive numeric value representing θ₂
-#' @param theta A positive numeric value
+#' @param theta A numeric value representing θ
 #' @param r A non-zero numeric parameter of the scale-exponential family
 #' @param n An integer representing the sample size
 #' @param m A non-zero numeric parameter of the scale-exponential family
 #' @param alpha Numeric value between 0 and 1 representing the significance level
-#' @returns A numeric value between 0 and 1 representing power at `theta`
+#' @return A numeric value between 0 and 1 representing the power at θ
 #' @examples
 #' interval_null_beta(1.75, 2.25, 2.29, -2, 200, -1, 0.05)
 #' @export

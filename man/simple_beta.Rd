@@ -20,7 +20,7 @@ simple_beta(theta0, theta1, r, n, m, alpha)
 \item{alpha}{Numeric value between 0 and 1 representing the significance level}
 }
 \value{
-A numeric value between 0 and 1 representing power at θ = θ₁
+A numeric value between 0 and 1 representing the power at θ = θ₁
 }
 \description{
 \code{simple_beta} computes statistical power for the MP test of

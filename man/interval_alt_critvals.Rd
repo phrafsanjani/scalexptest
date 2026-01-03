@@ -2,14 +2,14 @@
 % Please edit documentation in R/interval_alt.r
 \name{interval_alt_critvals}
 \alias{interval_alt_critvals}
-\title{Critical Values for Intervall-alternative UMP Test}
+\title{Critical Values for Interval-alternative UMP Test}
 \usage{
 interval_alt_critvals(theta1, theta2, r, n, m, alpha)
 }
 \arguments{
 \item{theta1}{A positive numeric value representing θ₁}
 
-\item{theta2}{A positive numeric value representing θ₂}
+\item{theta2}{A positive numeric value representing θ₂ (must be greater than θ₁)}
 
 \item{r}{A non-zero numeric parameter of the scale-exponential family}
 
